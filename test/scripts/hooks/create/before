@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
+
+fs.writeFile(path.join('..', '..', '..', 'outputs', 'before', 'the get down', (err, result) => {
+  if (err) {
+    return console.err(err);
+  }
+  console.log(result);
+}));
