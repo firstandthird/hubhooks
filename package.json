@@ -19,12 +19,17 @@
   },
   "license": "MIT",
   "dependencies": {
+    "async": "^2.1.4",
+    "fs": "0.0.1-security",
+    "runscript": "^1.1.0",
+    "yargs": "^6.6.0"
   },
   "devDependencies": {
     "eslint": "^3.9.1",
     "eslint-config-firstandthird": "^3.0.2",
     "eslint-plugin-import": "^2.1.0",
     "tap": "^8.0.1",
-    "tape": "^4.6.3"
+    "tape": "^4.6.3",
+    "wreck": "^10.0.0"
   }
 }
