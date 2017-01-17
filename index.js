@@ -5,9 +5,13 @@ const async = require('async');
 const path = require('path');
 const runscript = require('runscript');
 const crypto = require('crypto');
+const Logr = require('logr');
+const log = new Logr({
+  type: 'cli'
+});
 
 const defaultOptions = {
-  verbose: true,
+  verbose: false,
   port: 8080,
   secret: '',
   pusherName: process.env.HOSTNAME,
@@ -25,7 +29,7 @@ class Server {
     this.server = http.createServer(this.receiveHttpRequest.bind(this));
     this.server.listen(this.options.port, 'localhost');
     if (this.options.verbose) {
-      console.log(`server listening at ${this.options.port}`);
+      log(['hubhooks', 'notice'], `server listening at ${this.options.port}`);
     }
   }
 
@@ -66,30 +70,33 @@ class Server {
   // might remove to its own lib for re-use:
   runFirstExistingScript(fileList, data, callback) {
     async.detect(fileList, (pathname, detectCallback) => {
-      fs.exists(pathname, (pathExists) => {
-        return detectCallback(null, pathExists);
-      });
+      fs.exists(pathname, (pathExists) => detectCallback(null, pathExists));
     }, (err, existingScript) => {
       // if an error:
       if (err) {
         return callback(err);
       }
       // if none exist:
-      if (!existingScript)  {
+      if (!existingScript) {
         return callback();
       }
       if (this.options.verbose) {
-        console.log(`running ${existingScript}`);
+        log(['hubhooks', 'notice'], `running ${existingScript}`);
       }
-      runscript(`${existingScript} ${JSON.stringify(data)}`, { stdio: 'pipe' })
+      // todo: does this pass any params to the script?
+      runscript(`${existingScript}`, { stdio: 'inherit' })
         .then(stdio => {
           if (this.options.verbose) {
-            console.log(stdio);
+            log(['hubhooks', 'notice', existingScript], stdio);
           }
+          callback();
         })
         .catch(scriptErr => {
+          this.runFirstExistingScript([
+            path.join(this.options.scripts, 'hooks', data.event, 'error'),
+            path.join(this.options.scripts, 'hooks', 'error')
+          ], scriptErr, callback);
         });
-      callback();
     });
   }
 
@@ -102,7 +109,7 @@ class Server {
       processResponse: (beforeHooks, done) => this.runFirstExistingScript([
         path.join(this.options.scripts, data.event, `${data.repo}-${data.branch}`),
         path.join(this.options.scripts, data.event, data.repo),
-        path.join(this.options.scripts, data.event, data.branch)
+        path.join(this.options.scripts, data.event, 'default')
       ], data, done),
       afterHooks: (processResponse, done) => this.runFirstExistingScript([
         path.join(this.options.scripts, 'hooks', data.event, 'after'),

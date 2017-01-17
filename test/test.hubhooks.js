@@ -71,8 +71,7 @@ test('can load server and send it http signals', (t) => {
 });
 
 test('will trigger before/end event hooks', (t) => {
-  t.plan(4);
-  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts') });
+  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
   server.start();
   const payloadToSend = {
     action: 'opened',
@@ -97,7 +96,7 @@ test('will trigger before/end event hooks', (t) => {
   const allScriptResults = [];
   console.log = (data) => {
     allScriptResults.push(data);
-  }
+  };
   wreck.post('http://localhost:8080', {
     headers: {
       'x-github-event': 'create',
@@ -110,7 +109,57 @@ test('will trigger before/end event hooks', (t) => {
     t.equal(res.statusCode, 200);
     server.stop(() => {
       t.equal(allScriptResults.length, 2);
+      t.equal(allScriptResults[0].indexOf('create') > -1, true);
+      t.equal(allScriptResults[1].indexOf('hooks') > -1, true);
       t.equal(allScriptResults[0].indexOf('before') > -1, true);
+      t.equal(allScriptResults[1].indexOf('after') > -1, true);
+      t.end();
+    });
+  });
+});
+
+test('will trigger event-specific hooks', (t) => {
+  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
+  server.start();
+  const payloadToSend = {
+    action: 'opened',
+    issue: {
+      url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
+      number: 1347
+    },
+    repository: {
+      id: 1296269,
+      full_name: 'octocat/Goodbye-World',
+      owner: {
+        login: 'octocat',
+        id: 1
+      },
+    },
+    sender: {
+      login: 'octocat',
+      id: 1,
+    }
+  };
+  const oldLog = console.log;
+  const allScriptResults = [];
+  console.log = (data) => {
+    allScriptResults.push(data);
+  };
+  wreck.post('http://localhost:8080', {
+    headers: {
+      'x-github-event': 'push',
+      'x-hub-signature': 'sha1=2807ea9ca996abd3b063a76b3d088ec7b32e7d72'
+    },
+    payload: payloadToSend
+  }, (err, res, payload) => {
+    console.log = oldLog;
+    t.equal(err, null);
+    t.equal(res.statusCode, 200);
+    server.stop(() => {
+      t.equal(allScriptResults.length, 2);
+      t.equal(allScriptResults[0].indexOf('default') > -1, true);
+      t.equal(allScriptResults[1].indexOf('after') > -1, true);
+      t.end();
     });
   });
 });
