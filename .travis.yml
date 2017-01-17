@@ -1,7 +1,7 @@
 before_script:
- - chmod +x /home/travis/build/firstandthird/hubhooks/test/scripts/hooks/create/after
- - chmod +x /home/travis/build/firstandthird/hubhooks/test/scripts/hooks/create/before
- - chmod +x /home/travis/build/firstandthird/hubhooks/test/scripts/hooks/create/default
+ - chmod +x test/scripts/hooks/create/after
+ - chmod +x test/scripts/hooks/create/before
+ - chmod +x test/scripts/hooks/create/default
 language: node_js
 node_js:
   - "6"
