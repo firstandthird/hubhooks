@@ -7,6 +7,7 @@ const runscript = require('runscript');
 const crypto = require('crypto');
 
 const defaultOptions = {
+  verbose: true,
   port: 8080,
   secret: '',
   pusherName: process.env.HOSTNAME,
@@ -21,32 +22,22 @@ class Server {
   }
 
   start(callback) {
-    this.server = http.createServer(this.receiveRequest.bind(this));
+    this.server = http.createServer(this.receiveHttpRequest.bind(this));
     this.server.listen(this.options.port, 'localhost');
+    if (this.options.verbose) {
+      console.log(`server listening at ${this.options.port}`);
+    }
   }
 
   stop(callback) {
     this.server.close(callback);
   }
 
-  runScriptIfExists(pathname, data, callback) {
-    console.log('you want to run %s', pathname)
-    fs.exists(pathname, (pathExists) => {
-      runscript(pathname, {})
-      .catch(err => {
-        // this.runScriptIfExists();
-      });
-      if (pathExists) {
-        return callback(null, pathname);
-      }
-      return callback();
-    });
-  }
-
-  receiveRequest(request, response, done) {
+  receiveHttpRequest(request, response) {
     let payloadAsString = '';
     if (request.method !== 'POST') {
       response.writeHead(403, { 'Content-Type': 'text/plain' }).end();
+      response.end('Permission Denied');
       return request.connection.destroy();
     }
     request.on('data', (data) => {
@@ -67,23 +58,59 @@ class Server {
         repo: request.payload.repository.full_name
       };
       dataToProcess.branch = request.payload.ref || 'master';
-      return this.processEvent(dataToProcess, response, done);
+      return this.processGithubEvent(dataToProcess, response);
     };
     request.on('end', end.bind(this));
   }
 
-  processEvent(data, response, done) {
+  // might remove to its own lib for re-use:
+  runFirstExistingScript(fileList, data, callback) {
+    async.detect(fileList, (pathname, detectCallback) => {
+      fs.exists(pathname, (pathExists) => {
+        return detectCallback(null, pathExists);
+      });
+    }, (err, existingScript) => {
+      // if an error:
+      if (err) {
+        return callback(err);
+      }
+      // if none exist:
+      if (!existingScript)  {
+        return callback();
+      }
+      if (this.options.verbose) {
+        console.log(`running ${existingScript}`);
+      }
+      runscript(`${existingScript} ${JSON.stringify(data)}`, { stdio: 'pipe' })
+        .then(stdio => {
+          if (this.options.verbose) {
+            console.log(stdio);
+          }
+        })
+        .catch(scriptErr => {
+        });
+      callback();
+    });
+  }
+
+  processGithubEvent(data, response) {
     async.autoInject({
-      beforeHooks: done => this.runScriptIfExists(path.join(this.options.scripts, 'hooks', 'before'), data, done),
-      beforeEventHooks: done => this.runScriptIfExists(path.join(this.options.scripts, 'hooks', data.event, 'before'), data, done),
-      processResponse: (beforeHooks, done) => async.detect([path.join(this.options.scripts, data.event, `${data.repo}-${data.branch}`), path.join(this.options.scripts, data.event, data.repo), path.join(this.options.scripts, data.event, data.branch)], (pathname, detectCallback) => {
-        this.runScriptIfExists(pathname, data, detectCallback);
-      }, done),
-      afterHooks: (processResponse, done) => this.runScriptIfExists(path.join(this.options.scripts, 'hooks', 'after'), data, done),
-      afterEventHooks: (processResponse, done) => this.runScriptIfExists(path.join(this.options.scripts, 'hooks', data.event, 'after'), data, done),
+      beforeHooks: done => this.runFirstExistingScript([
+        path.join(this.options.scripts, 'hooks', data.event, 'before'),
+        path.join(this.options.scripts, 'hooks', 'before')
+      ], data, done),
+      processResponse: (beforeHooks, done) => this.runFirstExistingScript([
+        path.join(this.options.scripts, data.event, `${data.repo}-${data.branch}`),
+        path.join(this.options.scripts, data.event, data.repo),
+        path.join(this.options.scripts, data.event, data.branch)
+      ], data, done),
+      afterHooks: (processResponse, done) => this.runFirstExistingScript([
+        path.join(this.options.scripts, 'hooks', data.event, 'after'),
+        path.join(this.options.scripts, 'hooks', 'after')
+      ], data, done),
     }, (err, result) => {
       if (err) {
-        return response.end('failed');
+        response.end('failed');
       }
       response.end('success');
     });

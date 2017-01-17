@@ -1,14 +1,25 @@
 'use strict';
-const Server = require('./index.js')
+const Server = require('./index.js');
 
-require('yargs')
+const argv = require('yargs')
   .usage('Usage: $0 --scripts path/to/scripts --secret blah')
+  .option('verbose', {
+    describe: 'verbose syntax',
+    default: false
+  })
   .option('scripts', {
-    describe: 'path to directory containing js scripts to execute when hook fires'
+    describe: 'path to directory containing js scripts to execute when hook fires',
+    default: process.cwd()
   })
   .option('secret', {
-    describe: 'secret auth signature that github will send'
+    describe: 'secret auth code used for decrypting the github packet signature'
   })
   .argv;
 
-module.exports = Server;
+const server = new Server({
+  verbose: argv.verbose,
+  scripts: argv.scripts,
+  secret: argv.secret
+});
+
+server.start();

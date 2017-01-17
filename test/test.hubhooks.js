@@ -1,7 +1,6 @@
 const test = require('tape');
 const Server = require('../index.js');
 const wreck = require('wreck');
-const fs = require('fs');
 const path = require('path');
 
 test('can construct server', (t) => {
@@ -72,7 +71,7 @@ test('can load server and send it http signals', (t) => {
 });
 
 test('will trigger before/end event hooks', (t) => {
-  t.plan(3);
+  t.plan(4);
   const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts') });
   server.start();
   const payloadToSend = {
@@ -94,6 +93,11 @@ test('will trigger before/end event hooks', (t) => {
       id: 1,
     }
   };
+  const oldLog = console.log;
+  const allScriptResults = [];
+  console.log = (data) => {
+    allScriptResults.push(data);
+  }
   wreck.post('http://localhost:8080', {
     headers: {
       'x-github-event': 'create',
@@ -101,12 +105,12 @@ test('will trigger before/end event hooks', (t) => {
     },
     payload: payloadToSend
   }, (err, res, payload) => {
+    console.log = oldLog;
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     server.stop(() => {
-      fs.exists(path.join('outputs', 'before'), (exists) => {
-        t.equal(exists, true);
-      });
+      t.equal(allScriptResults.length, 2);
+      t.equal(allScriptResults[0].indexOf('before') > -1, true);
     });
   });
 });

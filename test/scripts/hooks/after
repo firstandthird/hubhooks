@@ -1,10 +1,2 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
-
-fs.writeFile(path.join('..', '..', '..', 'outputs', 'before', 'house of cards', (err, result) => {
-  if (err) {
-    return console.err(err);
-  }
-  console.log(result);
-}));
+console.log('house of cards');
