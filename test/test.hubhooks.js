@@ -108,8 +108,9 @@ test('will trigger before/end event hooks', (t) => {
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     server.stop(() => {
-      t.equal(allScriptResults.length, 6);
+      console.log('+')
       console.log(allScriptResults);
+      t.equal(allScriptResults.length, 6);
       t.equal(allScriptResults[0].indexOf('create') > -1, true);
       t.equal(allScriptResults[0].indexOf('before') > -1, true);
       t.equal(allScriptResults[2].indexOf('octocat') > -1, true);
