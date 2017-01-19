@@ -69,7 +69,7 @@ class Server {
 
   // might remove to its own lib for re-use:
   runFirstExistingScript(fileList, data, callback) {
-    async.detect(fileList, (pathname, detectCallback) => {
+    async.detectSeries(fileList, (pathname, detectCallback) => {
       fs.exists(pathname, (pathExists) => detectCallback(null, pathExists));
     }, (err, existingScript) => {
       // if an error:
