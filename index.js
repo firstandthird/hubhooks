@@ -3,7 +3,7 @@ const http = require('http');
 const fs = require('fs');
 const async = require('async');
 const path = require('path');
-const runscript = require('runscript');
+const runshell = require('runshell');
 const crypto = require('crypto');
 const Logr = require('logr');
 const log = new Logr({
@@ -84,19 +84,22 @@ class Server {
         log(['hubhooks', 'notice'], `running ${existingScript}`);
       }
       // todo: does this pass any params to the script?
-      runscript(`${existingScript}`, { stdio: 'inherit' })
-        .then(stdio => {
-          if (this.options.verbose) {
-            log(['hubhooks', 'notice', existingScript], stdio);
-          }
-          callback();
-        })
-        .catch(scriptErr => {
-          this.runFirstExistingScript([
+      runshell(existingScript, {
+        env: process.env,
+        // args: JSON.stringify(data)
+      }, (scriptErr, stdio, stderr) => {
+        // if it's not an error and not already the error hook, call the error hook:
+        if (scriptErr && fileList.indexOf(path.join(this.options.scripts, 'hooks', 'error')) < 0) {
+          return this.runFirstExistingScript([
             path.join(this.options.scripts, 'hooks', data.event, 'error'),
             path.join(this.options.scripts, 'hooks', 'error')
           ], scriptErr, callback);
-        });
+        }
+        if (this.options.verbose) {
+          log(['hubhooks', 'notice', existingScript], stdio);
+        }
+        callback();
+      });
     });
   }
 
