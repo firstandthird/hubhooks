@@ -24,6 +24,7 @@
     "fs": "0.0.1-security",
     "logr": "^1.16.0",
     "runscript": "^1.1.0",
+    "runshell": "0.0.6",
     "yargs": "^6.6.0"
   },
   "devDependencies": {
