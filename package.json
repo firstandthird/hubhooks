@@ -1,0 +1,37 @@
+{
+  "name": "hubhooks",
+  "version": "0.5.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "tap test/test.hubhooks.js"
+  },
+  "bin": "./bin.js",
+  "keywords": [
+    "json",
+    "template",
+    "object"
+  ],
+  "author": "Greg Allen <code@firstandthird.com> (http://firstandthird.com/)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firstandthird/hubhooks.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.1.4",
+    "fs": "0.0.1-security",
+    "logr": "^1.16.0",
+    "runshell": "^0.1.0",
+    "yargs": "^6.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.9.1",
+    "eslint-config-firstandthird": "^3.0.2",
+    "eslint-plugin-import": "^2.1.0",
+    "tap": "^8.0.1",
+    "tape": "^4.6.3",
+    "wreck": "^10.0.0"
+  }
+}

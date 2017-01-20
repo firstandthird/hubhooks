@@ -1,0 +1,11 @@
+before_script:
+ - chmod +x test/scripts/hooks/after
+ - chmod +x test/scripts/hooks/create/before
+ - chmod +x test/scripts/create/octocat/Hello-World
+ - chmod +x test/scripts/create/default
+ - chmod +x test/scripts/push/default
+language: node_js
+node_js:
+  - "6"
+  - "5"
+  - "4"
