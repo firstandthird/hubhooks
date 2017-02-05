@@ -1,7 +1,6 @@
 const test = require('tape');
 const Server = require('../index.js');
 const wreck = require('wreck');
-const fs = require('fs');
 const path = require('path');
 
 test('can construct server', (t) => {
@@ -72,8 +71,7 @@ test('can load server and send it http signals', (t) => {
 });
 
 test('will trigger before/end event hooks', (t) => {
-  t.plan(3);
-  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts') });
+  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
   server.start();
   const payloadToSend = {
     action: 'opened',
@@ -94,6 +92,11 @@ test('will trigger before/end event hooks', (t) => {
       id: 1,
     }
   };
+  const oldLog = console.log;
+  const allScriptResults = [];
+  console.log = (data) => {
+    allScriptResults.push(data);
+  };
   wreck.post('http://localhost:8080', {
     headers: {
       'x-github-event': 'create',
@@ -101,12 +104,64 @@ test('will trigger before/end event hooks', (t) => {
     },
     payload: payloadToSend
   }, (err, res, payload) => {
+    console.log = oldLog;
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     server.stop(() => {
-      fs.exists(path.join('outputs', 'before'), (exists) => {
-        t.equal(exists, true);
-      });
+      t.equal(allScriptResults.length, 6);
+      t.equal(allScriptResults[0].indexOf('create') > -1, true);
+      t.equal(allScriptResults[0].indexOf('before') > -1, true);
+      t.equal(allScriptResults[2].indexOf('octocat') > -1, true);
+      t.equal(allScriptResults[2].indexOf('Hello-World') > -1, true);
+      t.equal(allScriptResults[4].indexOf('hooks') > -1, true);
+      t.equal(allScriptResults[4].indexOf('after') > -1, true);
+      t.end();
+    });
+  });
+});
+
+test('will trigger event-specific hooks', (t) => {
+  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
+  server.start();
+  const payloadToSend = {
+    action: 'opened',
+    issue: {
+      url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
+      number: 1347
+    },
+    repository: {
+      id: 1296269,
+      full_name: 'octocat/Goodbye-World',
+      owner: {
+        login: 'octocat',
+        id: 1
+      },
+    },
+    sender: {
+      login: 'octocat',
+      id: 1,
+    }
+  };
+  const oldLog = console.log;
+  const allScriptResults = [];
+  console.log = (data) => {
+    allScriptResults.push(data);
+  };
+  wreck.post('http://localhost:8080', {
+    headers: {
+      'x-github-event': 'push',
+      'x-hub-signature': 'sha1=2807ea9ca996abd3b063a76b3d088ec7b32e7d72'
+    },
+    payload: payloadToSend
+  }, (err, res, payload) => {
+    console.log = oldLog;
+    t.equal(err, null);
+    t.equal(res.statusCode, 200);
+    server.stop(() => {
+      t.equal(allScriptResults.length, 4);
+      t.equal(allScriptResults[0].indexOf('default') > -1, true);
+      t.equal(allScriptResults[2].indexOf('after') > -1, true);
+      t.end();
     });
   });
 });
