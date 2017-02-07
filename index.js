@@ -6,8 +6,16 @@ const path = require('path');
 const runshell = require('runshell');
 const crypto = require('crypto');
 const Logr = require('logr');
+const Joi = require('joi');
 const log = new Logr({
   type: 'cli'
+});
+
+const SimpleSchema = Joi.object().keys({
+  type: Joi.string().required(),
+  repo: Joi.string().required(),
+  branch: Joi.string().required(),
+  user: Joi.string().required(),
 });
 
 const defaultOptions = {
@@ -57,12 +65,18 @@ class Server {
         response.end('Permission Denied');
         return request.connection.destroy();
       }
-      const dataToProcess = {
-        event: request.headers['x-github-event'],
-        repo: request.payload.repository.full_name
-      };
-      dataToProcess.branch = request.payload.ref || 'master';
-      return this.processGithubEvent(dataToProcess, response);
+      SimpleSchema.validate(request.payload, (err, result) => {
+        if (err || result.length !== 4) {
+          request.payload.event = request.payload.type;
+          return this.processGithubEvent(request.payload, response);
+        }
+        const dataToProcess = {
+          event: request.headers['x-github-event'],
+          repo: request.payload.repository.full_name
+        };
+        dataToProcess.branch = request.payload.ref || 'master';
+        return this.processGithubEvent(dataToProcess, response);
+      });
     };
     request.on('end', end.bind(this));
   }

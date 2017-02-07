@@ -3,6 +3,10 @@ const Server = require('../index.js');
 const wreck = require('wreck');
 const path = require('path');
 
+// you can use this snippet to print an sha1 strings for any other packages you want to add for testing:
+// const crypto = require('crypto');
+// console.log(crypto.createHmac('sha1', '123').update(JSON.stringify(payloadToSend)).digest('hex'));
+
 test('can construct server', (t) => {
   const server = new Server({ secret: '123' });
   t.equal(typeof server.start, 'function');
@@ -183,17 +187,17 @@ test('will send a minimal hook when specified', (t) => {
   wreck.post('http://localhost:8080', {
     headers: {
       'x-github-event': 'push',
-      'x-hub-signature': 'sha1=2807ea9ca996abd3b063a76b3d088ec7b32e7d72'
+      'x-hub-signature': 'sha1=6dab86246adbdd9d83efc919b87121ee58f30fab'
     },
     payload: payloadToSend
   }, (err, res, payload) => {
     console.log = oldLog;
+    console.log(allScriptResults)
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     server.stop(() => {
-      t.equal(allScriptResults.length, 4);
-      t.equal(allScriptResults[0].indexOf('default') > -1, true);
-      t.equal(allScriptResults[2].indexOf('after') > -1, true);
+      t.equal(allScriptResults.length, 1);
+      t.equal(allScriptResults[0].indexOf('after') > -1, true);
       t.end();
     });
   });
