@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "tap test/test.hubhooks.js"
+    "test": "tap test/test.*.js"
   },
   "bin": "./bin.js",
   "keywords": [
