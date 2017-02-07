@@ -52,13 +52,14 @@ test('runFirstExistingScript', (t) => {
 test('runFirstExistingScript error fallback', (t) => {
   runFirstExistingScript([
     path.join(__dirname, 'scripts', 'booga', 'no', 'notAThing'),
+    path.join(__dirname, 'scripts', 'also', 'not', 'real'),
   ], {
     event: 'create'
   }, {
     scripts: __dirname
   }, (err, results) => {
     t.notOk(err);
-    t.equal(results, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
+    t.equal(results, path.join(__dirname, 'scripts', 'create', 'error'));
     t.end();
   });
 });
