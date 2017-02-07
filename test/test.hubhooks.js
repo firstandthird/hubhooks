@@ -112,13 +112,13 @@ test('will trigger before/end event hooks', (t) => {
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     server.stop(() => {
-      t.equal(allScriptResults.length, 6);
+      t.equal(allScriptResults.length, 3);
       t.equal(allScriptResults[0].indexOf('create') > -1, true);
       t.equal(allScriptResults[0].indexOf('before') > -1, true);
-      t.equal(allScriptResults[2].indexOf('octocat') > -1, true);
-      t.equal(allScriptResults[2].indexOf('Hello-World') > -1, true);
-      t.equal(allScriptResults[4].indexOf('hooks') > -1, true);
-      t.equal(allScriptResults[4].indexOf('after') > -1, true);
+      t.equal(allScriptResults[1].indexOf('octocat') > -1, true);
+      t.equal(allScriptResults[1].indexOf('Hello-World') > -1, true);
+      t.equal(allScriptResults[2].indexOf('hooks') > -1, true);
+      t.equal(allScriptResults[2].indexOf('after') > -1, true);
       t.end();
     });
   });
@@ -162,9 +162,9 @@ test('will trigger event-specific hooks', (t) => {
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     server.stop(() => {
-      t.equal(allScriptResults.length, 4);
+      t.equal(allScriptResults.length, 2);
       t.equal(allScriptResults[0].indexOf('default') > -1, true);
-      t.equal(allScriptResults[2].indexOf('after') > -1, true);
+      t.equal(allScriptResults[1].indexOf('after') > -1, true);
       t.end();
     });
   });
@@ -192,7 +192,6 @@ test('will send a minimal hook when specified', (t) => {
     payload: payloadToSend
   }, (err, res, payload) => {
     console.log = oldLog;
-    console.log(allScriptResults)
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     server.stop(() => {

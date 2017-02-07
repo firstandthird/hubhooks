@@ -65,8 +65,8 @@ class Server {
         response.end('Permission Denied');
         return request.connection.destroy();
       }
-      SimpleSchema.validate(request.payload, (err, result) => {
-        if (err || result.length !== 4) {
+      SimpleSchema.validate(request.payload, (err, validatResult) => {
+        if (!err && validatResult) {
           request.payload.event = request.payload.type;
           return this.processGithubEvent(request.payload, response);
         }
