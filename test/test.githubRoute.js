@@ -2,6 +2,7 @@
 const test = require('tape');
 const Server = require('../index.js');
 const wreck = require('wreck');
+const path = require('path');
 
 // you can use this snippet to print an sha1 strings for any other packages you want to add for testing:
 // const crypto = require('crypto');
