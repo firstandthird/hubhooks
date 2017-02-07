@@ -25,7 +25,9 @@ test('executeScripts', (t) => {
       scripts: path.join(__dirname, 'scripts')
     }, (err, results) => {
       t.equal(err, null);
-      t.equal(results, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
+      t.equal(results.afterHooks, path.join(__dirname, 'scripts', 'hooks', 'after'));
+      t.equal(results.beforeHooks, path.join(__dirname, 'scripts', 'hooks', 'create', 'before'));
+      t.equal(results.processResponse, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
       t.end();
     });
 });
