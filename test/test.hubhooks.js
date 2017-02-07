@@ -57,7 +57,8 @@ test('runFirstExistingScript error fallback', (t) => {
   }, {
     scripts: __dirname
   }, (err, results) => {
-    t.ok(err);
+    t.notOk(err);
+    t.equal(results, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
     t.end();
   });
 });
