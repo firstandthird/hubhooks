@@ -32,3 +32,44 @@ test('simpleRoute will send a hook', (t) => {
     });
   });
 });
+
+test('simpleRoute will bounce if not valid', (t) => {
+  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
+  server.start();
+  const payloadToSend = {
+    event: 'opened',
+    user: 'octocat',
+    repo: 'octocat/Goodbye-World',
+    branch: 'notMaster',
+  };
+  wreck.post('http://localhost:8080/simple', {
+    payload: payloadToSend
+  }, (err, res, payload) => {
+    t.equal(err, null);
+    t.equal(res.statusCode, 403);
+    server.stop(() => {
+      t.end();
+    });
+  });
+});
+
+test('simpleRoute will bounce if secret not correct', (t) => {
+  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
+  server.start();
+  const payloadToSend = {
+    event: 'opened',
+    secret: 'no good',
+    user: 'octocat',
+    repo: 'octocat/Goodbye-World',
+    branch: 'notMaster',
+  };
+  wreck.post('http://localhost:8080/simple', {
+    payload: payloadToSend
+  }, (err, res, payload) => {
+    t.equal(err, null);
+    t.equal(res.statusCode, 403);
+    server.stop(() => {
+      t.end();
+    });
+  });
+});
