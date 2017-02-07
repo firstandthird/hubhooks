@@ -21,7 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.1.4",
-    "fs": "0.0.1-security",
+    "fs": "0.0.2",
     "logr": "^1.16.0",
     "runshell": "^0.1.0",
     "yargs": "^6.6.0"
@@ -30,7 +30,7 @@
     "eslint": "^3.9.1",
     "eslint-config-firstandthird": "^3.0.2",
     "eslint-plugin-import": "^2.1.0",
-    "tap": "^8.0.1",
+    "tap": "^9.0.3",
     "tape": "^4.6.3",
     "wreck": "^10.0.0"
   }
