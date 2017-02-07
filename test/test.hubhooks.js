@@ -165,3 +165,36 @@ test('will trigger event-specific hooks', (t) => {
     });
   });
 });
+
+test('will send a minimal hook when specified', (t) => {
+  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
+  server.start();
+  const payloadToSend = {
+    type: 'opened',
+    user: 'octocat',
+    repo: 'octocat/Goodbye-World',
+    branch: 'notMaster'
+  };
+  const oldLog = console.log;
+  const allScriptResults = [];
+  console.log = (data) => {
+    allScriptResults.push(data);
+  };
+  wreck.post('http://localhost:8080', {
+    headers: {
+      'x-github-event': 'push',
+      'x-hub-signature': 'sha1=2807ea9ca996abd3b063a76b3d088ec7b32e7d72'
+    },
+    payload: payloadToSend
+  }, (err, res, payload) => {
+    console.log = oldLog;
+    t.equal(err, null);
+    t.equal(res.statusCode, 200);
+    server.stop(() => {
+      t.equal(allScriptResults.length, 4);
+      t.equal(allScriptResults[0].indexOf('default') > -1, true);
+      t.equal(allScriptResults[2].indexOf('after') > -1, true);
+      t.end();
+    });
+  });
+});
