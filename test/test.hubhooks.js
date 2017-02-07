@@ -189,11 +189,10 @@ test('will send a minimal hook on simple route', (t) => {
     payload: payloadToSend
   }, (err, res, payload) => {
     console.log = oldLog;
-    console.log(allScriptResults)
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     server.stop(() => {
-      t.equal(allScriptResults.length, 1);
+      t.equal(allScriptResults.length, 2);
       t.equal(allScriptResults[0].indexOf('after') > -1, true);
       t.end();
     });
