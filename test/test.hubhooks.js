@@ -5,10 +5,6 @@ const executeScripts = require('../lib/executeScripts');
 const runFirstExistingScript = require('../lib/runFirstExistingScript');
 const path = require('path');
 
-// you can use this snippet to print an sha1 strings for any other packages you want to add for testing:
-// const crypto = require('crypto');
-// console.log(crypto.createHmac('sha1', '123').update(JSON.stringify(payloadToSend)).digest('hex'));
-
 test('can construct server', (t) => {
   const server = new Server({ secret: '123' });
   t.equal(typeof server.start, 'function');
