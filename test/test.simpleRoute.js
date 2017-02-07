@@ -25,11 +25,9 @@ test('simpleRoute will send a hook', (t) => {
     console.log = oldLog;
     t.equal(err, null);
     t.equal(res.statusCode, 200);
-    server.stop(() => {
-      t.equal(allScriptResults.length, 2);
-      t.equal(allScriptResults[0].indexOf('after') > -1, true);
-      t.end();
-    });
+    t.equal(allScriptResults.length, 2);
+    t.equal(allScriptResults[0].indexOf('after') > -1, true);
+    server.stop(t.end);
   });
 });
 
@@ -38,8 +36,6 @@ test('simpleRoute will bounce if not valid', (t) => {
   server.start();
   const payloadToSend = {
     event: 'opened',
-    user: 'octocat',
-    repo: 'octocat/Goodbye-World',
     branch: 'notMaster',
   };
   wreck.post('http://localhost:8080/simple', {
