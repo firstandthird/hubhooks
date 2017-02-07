@@ -15,23 +15,25 @@ test('can construct server', (t) => {
   t.end();
 });
 
-// test('executeScripts', (t) => {
-//   executeScripts({
-//     event: 'create',
-//     repo: 'octocat/Hello-World',
-//     branch: 'master'
-//   },
-//     {
-//       scripts: path.join(__dirname, 'test', 'scripts')
-//     }, (err, result) => {
-//       t.equal(err, null);
-//       console.log('++++');
-//       console.log('++++');
-//       console.log('++++');
-//       console.log('++++');
-//       console.log(result);
-//   });
-// });
+test('executeScripts', (t) => {
+  executeScripts({
+    event: 'create',
+    repo: 'octocat/Hello-World',
+    branch: 'master'
+  },
+    {
+      scripts: path.join(__dirname, 'test', 'scripts')
+    }, (err, result) => {
+      t.equal(err, null);
+    });
+});
+
+test('executeScripts ', (t) => {
+});
+
+test('executeScripts', (t) => {
+});
+
 
 test('runFirstExistingScript', (t) => {
   runFirstExistingScript([
@@ -56,7 +58,7 @@ test('runFirstExistingScript error fallback', (t) => {
   ], {
     event: 'create'
   }, {
-    scripts: __dirname
+    scripts: path.join(__dirname, 'scripts')
   }, (err, results) => {
     t.notOk(err);
     t.equal(results, path.join(__dirname, 'scripts', 'create', 'error'));
