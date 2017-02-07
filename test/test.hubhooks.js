@@ -48,7 +48,7 @@ test('runFirstExistingScript', (t) => {
   });
 });
 
-test('runFirstExistingScript error fallback', (t) => {
+test('runFirstExistingScript fallback if none executed', (t) => {
   runFirstExistingScript([
     path.join(__dirname, 'scripts', 'booga', 'no', 'notAThing'),
     path.join(__dirname, 'scripts', 'also', 'not', 'real'),
@@ -58,7 +58,35 @@ test('runFirstExistingScript error fallback', (t) => {
     scripts: path.join(__dirname, 'scripts')
   }, (err, results) => {
     t.notOk(err);
-    t.equal(results, path.join(__dirname, 'scripts', 'hooks', 'create', 'error'));
+    t.equal(results, undefined);
+    t.end();
+  });
+});
+
+test('runFirstExistingScript fallback if none executed', (t) => {
+  runFirstExistingScript([
+    path.join(__dirname, 'scripts', 'booga', 'no', 'notAThing'),
+    path.join(__dirname, 'scripts', 'also', 'not', 'real'),
+  ], {
+    event: 'create'
+  }, {
+    scripts: path.join(__dirname, 'scripts')
+  }, (err, results) => {
+    t.notOk(err);
+    t.end();
+  });
+});
+
+test('runFirstExistingScript error fallback', (t) => {
+  runFirstExistingScript([
+    path.join(__dirname, 'scripts', 'hooks', 'alter', 'testRepo')
+  ], {
+    event: 'alter'
+  }, {
+    scripts: path.join(__dirname, 'scripts')
+  }, (err, results) => {
+    t.notOk(err);
+    t.equal(results, path.join(__dirname, 'scripts', 'hooks', 'alter', 'error'));
     t.end();
   });
 });
