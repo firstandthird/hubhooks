@@ -33,27 +33,7 @@ test('can construct server', (t) => {
 //   });
 // });
 
-// test('runFirstExistingScript error fallback', (t) => {
-//   runFirstExistingScript([
-//     path.join(__dirname, 'scripts', 'booga', 'no', 'notAThing'),
-//     path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'),
-//     path.join(__dirname, 'scripts', 'create', 'default'),
-//   ], {
-//     event: 'create'
-//   }, {
-//     scripts: __dirname
-//   }, (err, results) => {
-//     t.notOk(err);
-//     console.log('results')
-//     console.log('results')
-//     console.log('results')
-//     console.log(err)
-//     console.log(results)
-//     t.end();
-//   });
-// });
-
-test('runFirstExistingScript error fallback', (t) => {
+test('runFirstExistingScript', (t) => {
   runFirstExistingScript([
     path.join(__dirname, 'scripts', 'booga', 'no', 'notAThing'),
     path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'),
@@ -64,11 +44,20 @@ test('runFirstExistingScript error fallback', (t) => {
     scripts: __dirname
   }, (err, results) => {
     t.notOk(err);
-    console.log('results')
-    console.log('results')
-    console.log('results')
-    console.log(err)
-    console.log(results)
+    t.equal(results, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
+    t.end();
+  });
+});
+
+test('runFirstExistingScript error fallback', (t) => {
+  runFirstExistingScript([
+    path.join(__dirname, 'scripts', 'booga', 'no', 'notAThing'),
+  ], {
+    event: 'create'
+  }, {
+    scripts: __dirname
+  }, (err, results) => {
+    t.ok(err);
     t.end();
   });
 });
