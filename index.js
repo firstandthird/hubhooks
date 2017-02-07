@@ -1,29 +1,21 @@
 'use strict';
 const http = require('http');
-const fs = require('fs');
-const async = require('async');
-const path = require('path');
-const runshell = require('runshell');
 const crypto = require('crypto');
 const Logr = require('logr');
-const Joi = require('joi');
-const log = new Logr({
-  type: 'cli'
-});
-
-const SimpleSchema = Joi.object().keys({
-  type: Joi.string().required(),
-  repo: Joi.string().required(),
-  branch: Joi.string().required(),
-  user: Joi.string().required(),
-});
+const executeScripts = require('./lib/executeScripts');
+const handleSimpleRoute = require('./lib/simpleRoute');
 
 const defaultOptions = {
   verbose: false,
   port: 8080,
   secret: '',
   pusherName: process.env.HOSTNAME,
-  scripts: process.cwd()
+  scripts: process.cwd(),
+  githubRoute: '/',
+  simpleRoute: '/simple',
+  log: new Logr({
+    type: 'cli'
+  })
 };
 
 class Server {
@@ -37,7 +29,7 @@ class Server {
     this.server = http.createServer(this.receiveHttpRequest.bind(this));
     this.server.listen(this.options.port, 'localhost');
     if (this.options.verbose) {
-      log(['hubhooks', 'notice'], `server listening at ${this.options.port}`);
+      this.options.log(['hubhooks', 'notice'], `server listening at ${this.options.port}`);
     }
   }
 
@@ -57,82 +49,29 @@ class Server {
     });
     const end = () => {
       request.payload = JSON.parse(payloadAsString);
-      // confirm signature:
-      const headerSig = request.headers['x-hub-signature'];
-      const sig = `sha1=${crypto.createHmac('sha1', this.options.secret).update(payloadAsString).digest('hex')}`;
-      if (headerSig !== sig) {
-        response.writeHead(403, { 'Content-Type': 'text/plain' });
-        response.end('Permission Denied');
-        return request.connection.destroy();
+      if (request.url === this.options.githubRoute) {
+        return this.handleGithubRoute(request, response, this.options);
       }
-      SimpleSchema.validate(request.payload, (err, result) => {
-        if (err || result.length !== 4) {
-          request.payload.event = request.payload.type;
-          return this.processGithubEvent(request.payload, response);
-        }
-        const dataToProcess = {
-          event: request.headers['x-github-event'],
-          repo: request.payload.repository.full_name
-        };
-        dataToProcess.branch = request.payload.ref || 'master';
-        return this.processGithubEvent(dataToProcess, response);
-      });
+      return handleSimpleRoute(request, response, this.options);
     };
     request.on('end', end.bind(this));
   }
 
-  // might remove to its own lib for re-use:
-  runFirstExistingScript(fileList, data, callback) {
-    async.detectSeries(fileList, (pathname, detectCallback) => {
-      fs.exists(pathname, (pathExists) => detectCallback(null, pathExists));
-    }, (err, existingScript) => {
-      // if an error:
-      if (err) {
-        return callback(err);
-      }
-      // if none exist:
-      if (!existingScript) {
-        return callback();
-      }
-      if (this.options.verbose) {
-        log(['hubhooks', 'notice'], `running ${existingScript}`);
-      }
-      // todo: does this pass any params to the script?
-      runshell(existingScript, {
-        env: process.env,
-        // args: JSON.stringify(data)
-      }, (scriptErr, stdio, stderr) => {
-        // if it's not an error and not already the error hook, call the error hook:
-        if (scriptErr && fileList.indexOf(path.join(this.options.scripts, 'hooks', 'error')) < 0) {
-          return this.runFirstExistingScript([
-            path.join(this.options.scripts, 'hooks', data.event, 'error'),
-            path.join(this.options.scripts, 'hooks', 'error')
-          ], scriptErr, callback);
-        }
-        if (this.options.verbose) {
-          log(['hubhooks', 'notice', existingScript], stdio);
-        }
-        callback();
-      });
-    });
-  }
-
-  processGithubEvent(data, response) {
-    async.autoInject({
-      beforeHooks: done => this.runFirstExistingScript([
-        path.join(this.options.scripts, 'hooks', data.event, 'before'),
-        path.join(this.options.scripts, 'hooks', 'before')
-      ], data, done),
-      processResponse: (beforeHooks, done) => this.runFirstExistingScript([
-        path.join(this.options.scripts, data.event, `${data.repo}-${data.branch}`),
-        path.join(this.options.scripts, data.event, data.repo),
-        path.join(this.options.scripts, data.event, 'default')
-      ], data, done),
-      afterHooks: (processResponse, done) => this.runFirstExistingScript([
-        path.join(this.options.scripts, 'hooks', data.event, 'after'),
-        path.join(this.options.scripts, 'hooks', 'after')
-      ], data, done),
-    }, (err, result) => {
+  handleGithubRoute(request, response) {
+    // confirm signature:
+    const headerSig = request.headers['x-hub-signature'];
+    const sig = `sha1=${crypto.createHmac('sha1', this.options.secret).update(JSON.stringify(request.payload)).digest('hex')}`;
+    if (headerSig !== sig) {
+      response.writeHead(403, { 'Content-Type': 'text/plain' });
+      response.end('Permission Denied');
+      return request.connection.destroy();
+    }
+    const dataToProcess = {
+      event: request.headers['x-github-event'],
+      repo: request.payload.repository.full_name
+    };
+    dataToProcess.branch = request.payload.ref || 'master';
+    executeScripts(dataToProcess, this.options, (err, result) => {
       if (err) {
         response.end('failed');
       }

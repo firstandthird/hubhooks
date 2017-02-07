@@ -170,25 +170,22 @@ test('will trigger event-specific hooks', (t) => {
   });
 });
 
-test('will send a minimal hook when specified', (t) => {
+test('will send a minimal hook on simple route', (t) => {
   const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
   server.start();
   const payloadToSend = {
-    type: 'opened',
+    event: 'opened',
     user: 'octocat',
     repo: 'octocat/Goodbye-World',
-    branch: 'notMaster'
+    branch: 'notMaster',
+    secret: '6dab86246adbdd9d83efc919b87121ee58f30fab'
   };
   const oldLog = console.log;
   const allScriptResults = [];
   console.log = (data) => {
     allScriptResults.push(data);
   };
-  wreck.post('http://localhost:8080', {
-    headers: {
-      'x-github-event': 'push',
-      'x-hub-signature': 'sha1=6dab86246adbdd9d83efc919b87121ee58f30fab'
-    },
+  wreck.post('http://localhost:8080/simple', {
     payload: payloadToSend
   }, (err, res, payload) => {
     console.log = oldLog;
