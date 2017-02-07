@@ -22,18 +22,13 @@ test('executeScripts', (t) => {
     branch: 'master'
   },
     {
-      scripts: path.join(__dirname, 'test', 'scripts')
-    }, (err, result) => {
+      scripts: path.join(__dirname, 'scripts')
+    }, (err, results) => {
       t.equal(err, null);
+      t.equal(results, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
+      t.end();
     });
 });
-
-test('executeScripts ', (t) => {
-});
-
-test('executeScripts', (t) => {
-});
-
 
 test('runFirstExistingScript', (t) => {
   runFirstExistingScript([
