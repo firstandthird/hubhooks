@@ -1,9 +1,8 @@
 'use strict';
 const http = require('http');
-const crypto = require('crypto');
 const Logr = require('logr');
-const executeScripts = require('./lib/executeScripts');
 const handleSimpleRoute = require('./lib/simpleRoute');
+const handleGithubRoute = require('./lib/githubRoute');
 
 const defaultOptions = {
   verbose: false,
@@ -50,33 +49,11 @@ class Server {
     const end = () => {
       request.payload = JSON.parse(payloadAsString);
       if (request.url === this.options.githubRoute) {
-        return this.handleGithubRoute(request, response, this.options);
+        return handleGithubRoute(request, response, this.options);
       }
       return handleSimpleRoute(request, response, this.options);
     };
     request.on('end', end.bind(this));
-  }
-
-  handleGithubRoute(request, response) {
-    // confirm signature:
-    const headerSig = request.headers['x-hub-signature'];
-    const sig = `sha1=${crypto.createHmac('sha1', this.options.secret).update(JSON.stringify(request.payload)).digest('hex')}`;
-    if (headerSig !== sig) {
-      response.writeHead(403, { 'Content-Type': 'text/plain' });
-      response.end('Permission Denied');
-      return request.connection.destroy();
-    }
-    const dataToProcess = {
-      event: request.headers['x-github-event'],
-      repo: request.payload.repository.full_name
-    };
-    dataToProcess.branch = request.payload.ref || 'master';
-    executeScripts(dataToProcess, this.options, (err, result) => {
-      if (err) {
-        response.end('failed');
-      }
-      response.end('success');
-    });
   }
 }
 
