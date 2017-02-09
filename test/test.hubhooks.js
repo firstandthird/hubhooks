@@ -82,8 +82,8 @@ test('runFirstExistingScript error fallback', (t) => {
   }, {
     scripts: path.join(__dirname, 'scripts')
   }, (err, results) => {
-    t.notOk(err);
-    t.equal(results, path.join(__dirname, 'scripts', 'hooks', 'alter', 'error'));
+    t.ok(err);
+    t.equal(err.toString().indexOf('alter') > -1, true);
     t.end();
   });
 });
