@@ -28,7 +28,7 @@ test('executeScripts', (t) => {
       t.end();
     });
 });
-/*
+
 test('runFirstExistingScript', (t) => {
   runFirstExistingScript([
     path.join(__dirname, 'scripts', 'booga', 'no', 'notAThing'),
@@ -87,4 +87,3 @@ test('runFirstExistingScript error fallback', (t) => {
     t.end();
   });
 });
-*/
