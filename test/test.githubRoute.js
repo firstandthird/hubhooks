@@ -105,6 +105,8 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     console.log = oldLog;
     t.equal(err, null);
     t.equal(res.statusCode, 200);
+    console.log('============')
+    console.log(allScriptResults)
     server.stop(() => {
       t.equal(allScriptResults[0].indexOf('create') > -1, true);
       t.equal(allScriptResults[0].indexOf('before') > -1, true);
