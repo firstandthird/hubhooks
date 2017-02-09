@@ -3,6 +3,7 @@ const http = require('http');
 const Logr = require('logr');
 const handleSimpleRoute = require('./lib/simpleRoute');
 const handleGithubRoute = require('./lib/githubRoute');
+const reject = require('./lib/reject');
 
 const defaultOptions = {
   verbose: false,
@@ -39,9 +40,7 @@ class Server {
   receiveHttpRequest(request, response) {
     let payloadAsString = '';
     if (request.method !== 'POST') {
-      response.writeHead(403, { 'Content-Type': 'text/plain' }).end();
-      response.end('Permission Denied');
-      return request.connection.destroy();
+      return reject(request, response);
     }
     request.on('data', (data) => {
       payloadAsString += data;
@@ -51,7 +50,10 @@ class Server {
       if (request.url === this.options.githubRoute) {
         return handleGithubRoute(request, response, this.options);
       }
-      return handleSimpleRoute(request, response, this.options);
+      if (request.url === this.options.simpleRoute) {
+        return handleSimpleRoute(request, response, this.options);
+      }
+      return reject(request, response);
     };
     request.on('end', end.bind(this));
   }
