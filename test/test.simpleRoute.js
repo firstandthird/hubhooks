@@ -8,11 +8,11 @@ test('simpleRoute will send a hook', (t) => {
   const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
   server.start();
   const payloadToSend = {
-    event: 'opened',
     secret: '123',
-    user: 'octocat',
+    event: 'opened',
     repo: 'octocat/Goodbye-World',
     branch: 'notMaster',
+    user: 'octocat'
   };
   const oldLog = console.log;
   const allScriptResults = [];
