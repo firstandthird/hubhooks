@@ -9,7 +9,7 @@ test('simpleRoute will send a hook', (t) => {
   server.start();
   const payloadToSend = {
     secret: '123',
-    event: 'opened',
+    event: 'create',
     repo: 'octocat/Goodbye-World',
     branch: 'notMaster',
     user: 'octocat'
