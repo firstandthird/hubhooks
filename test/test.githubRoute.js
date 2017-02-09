@@ -157,6 +157,7 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     t.equal(res.statusCode, 200);
     server.stop(() => {
       t.equal(allScriptResults.length, 4);
+      console.log(allScriptResults)
       t.equal(allScriptResults[0].indexOf('default') > -1, true);
       t.equal(allScriptResults[2].indexOf('after') > -1, true);
       t.end();
