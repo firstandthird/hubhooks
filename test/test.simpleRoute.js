@@ -25,6 +25,7 @@ test('simpleRoute will send a hook', (t) => {
     console.log = oldLog;
     t.equal(err, null);
     t.equal(res.statusCode, 200);
+    console.log(allScriptResults)
     t.equal(allScriptResults.length, 2);
     t.equal(allScriptResults[0].indexOf('after') > -1, true);
     server.stop(t.end);
