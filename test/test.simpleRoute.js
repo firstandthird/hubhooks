@@ -26,8 +26,6 @@ test('simpleRoute will send a hook', (t) => {
     t.equal(err, null);
     t.equal(res.statusCode, 200);
     t.equal(allScriptResults.length, 2);
-    console.log('======================')
-    console.log(allScriptResults)
     t.equal(allScriptResults[0].indexOf('after') > -1, true);
     server.stop(t.end);
   });
@@ -37,7 +35,7 @@ test('simpleRoute will bounce if not valid', (t) => {
   const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
   server.start();
   const payloadToSend = {
-    event: 'opened',
+    event: 'create',
     branch: 'notMaster',
   };
   wreck.post('http://localhost:8080/simple', {
@@ -55,7 +53,7 @@ test('simpleRoute will bounce if secret not correct', (t) => {
   const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
   server.start();
   const payloadToSend = {
-    event: 'opened',
+    event: 'create',
     secret: 'no good',
     user: 'octocat',
     repo: 'octocat/Goodbye-World',
