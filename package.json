@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "tap test/test.hubhooks.js"
+    "test": "tap test/test.*.js"
   },
   "bin": "./bin.js",
   "keywords": [
@@ -21,6 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.1.4",
+    "joi": "^10.2.1",
     "fs": "0.0.2",
     "logr": "^1.16.0",
     "runshell": "^0.1.0",
