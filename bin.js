@@ -14,6 +14,7 @@ const argv = require('yargs')
   .option('secret', {
     describe: 'secret auth code used for decrypting the github packet signature'
   })
+  .env()
   .argv;
 
 const server = new Server({
