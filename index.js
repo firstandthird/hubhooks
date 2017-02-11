@@ -28,9 +28,7 @@ class Server {
   start(callback) {
     this.server = http.createServer(this.receiveHttpRequest.bind(this));
     this.server.listen(this.options.port, 'localhost');
-    if (this.options.verbose) {
-      this.options.log(['hubhooks', 'notice'], `server listening at ${this.options.port}`);
-    }
+    this.options.log(['server'], `server listening at ${this.options.port}`);
   }
 
   stop(callback) {
