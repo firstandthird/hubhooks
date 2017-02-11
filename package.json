@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node bin.js",
     "lint": "eslint .",
     "test": "tap test/test.*.js"
   },
@@ -23,14 +24,14 @@
     "async": "2.1.4",
     "joi": "10.2.1",
     "fs": "0.0.2",
-    "logr": "1.16.0",
-    "runshell": "0.1.0",
+    "logr": "1.19.0",
+    "runshell": "0.2.0",
     "yargs": "6.6.0"
   },
   "devDependencies": {
-    "eslint": "3.9.1",
-    "eslint-config-firstandthird": "3.0.2",
-    "eslint-plugin-import": "2.1.0",
+    "eslint": "3.15.0",
+    "eslint-config-firstandthird": "3.2.0",
+    "eslint-plugin-import": "2.2.0",
     "tap": "10.1.0",
     "tape": "4.6.3",
     "wreck": "10.0.0"
