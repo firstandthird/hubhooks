@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "async": "2.1.4",
+    "async": "2.1.5",
     "joi": "10.2.1",
     "fs": "0.0.2",
     "logr": "1.19.0",
