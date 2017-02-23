@@ -1,0 +1,11 @@
+app:
+  build: '.'
+  environment:
+    SECRET:
+    VERBOSE: 1
+    VIRTUAL_HOST: 'hubhooks.*'
+    FORCE_COLOR: 1
+  ports:
+    - '8080'
+  volumes:
+    - './example-scripts:/scripts'
