@@ -22,9 +22,10 @@
   "license": "MIT",
   "dependencies": {
     "async": "2.1.4",
-    "joi": "10.2.1",
     "fs": "0.0.2",
-    "logr": "1.19.0",
+    "joi": "10.2.1",
+    "logr": "2.0.0-beta.2",
+    "logr-console-color": "^1.0.1",
     "runshell": "0.2.0",
     "yargs": "6.6.0"
   },

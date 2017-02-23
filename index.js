@@ -13,8 +13,12 @@ const defaultOptions = {
   scripts: process.cwd(),
   githubRoute: '/',
   simpleRoute: '/simple',
-  log: new Logr({
-    type: 'cli'
+  log: Logr.createLogger({
+    reporters: {
+      console: {
+        reporter: require('logr-console-color')
+      }
+    }
   })
 };
 
@@ -27,7 +31,7 @@ class Server {
 
   start(callback) {
     this.server = http.createServer(this.receiveHttpRequest.bind(this));
-    this.server.listen(this.options.port, 'localhost');
+    this.server.listen(this.options.port);
     this.options.log(['server'], `server listening at ${this.options.port}`);
   }
 
