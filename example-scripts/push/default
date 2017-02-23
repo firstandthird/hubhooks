@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#build repo
+IMAGE=$(docker run \
+  --rm \
+  -e USER=$GITHUB_USER \
+  -e REPO=$GITHUB_REPO \
+  -e BRANCH=$GITHUB_BRANCH \
+  -e DOCKERREPO=gregallen/${GITHUB_REPO} \
+  -v $HOME/.docker:/root/.docker \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v $PWD/repos:/repos \
+  firstandthird/builder:0.0.5)
+
+if [[ "$?" != 0 ]]; then
+  echo "there was an error building"
+  exit 1
+fi
+echo $IMAGE
+
+#check if service exists
+docker service create \
+  -p 8080 \
+  -e PORT=8080 \
+  -e VIRTUAL_HOST=${GITHUB_REPO}-${GITHUB_BRANCH}.* \
+  --replicas 3 \
+  --update-delay 10s \
+  --name ${GITHUB_REPO}_${GITHUB_BRANCH} \
+  $IMAGE
+
+##create service fails, probably already exists
+if [[ "$?" == 1 ]]; then
+  docker service update \
+    --image $IMAGE \
+    ${GITHUB_REPO}_${GITHUB_BRANCH}
+fi
+
