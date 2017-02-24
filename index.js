@@ -16,7 +16,10 @@ const defaultOptions = {
   log: Logr.createLogger({
     reporters: {
       console: {
-        reporter: require('logr-console-color')
+        reporter: require('logr-console-color'),
+        options: {
+          timestamp: false
+        }
       }
     }
   })
