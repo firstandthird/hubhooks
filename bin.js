@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-const Server = require('./index.js');
+const Rapptor = require('rapptor');
 
 const argv = require('yargs')
   .usage('Usage: $0 --scripts path/to/scripts --secret blah')
@@ -18,10 +18,10 @@ const argv = require('yargs')
   .env()
   .argv;
 
-const server = new Server({
-  verbose: argv.verbose,
-  scripts: argv.scripts,
-  secret: argv.secret
-});
+const rapptor = new Rapptor();
+rapptor.start();
 
-server.start();
+// need to set this:
+//   verbose: argv.verbose,
+//   scripts: argv.scripts,
+//   secret: argv.secret
