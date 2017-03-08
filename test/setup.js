@@ -5,7 +5,7 @@ const Rapptor = require('rapptor');
 module.exports = (options, callback) => {
   async.autoInject({
     rapptor(done) {
-      const rapptor = new Rapptor();
+      const rapptor = new Rapptor(options);
       rapptor.start(done);
     },
     server(rapptor, done) {

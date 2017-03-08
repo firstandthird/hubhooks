@@ -2,9 +2,13 @@
 const test = require('tape');
 const setup = require('./setup.js');
 const wreck = require('wreck');
-
+const path = require('path');
 test('simpleRoute will send a hook', (t) => {
   setup({}, (err, server) => {
+    server.settings.app.secret = '123';
+    server.settings.app.scripts = path.join(__dirname, 'scripts');
+    console.log('+++++++++++++++++++++++++++++++++')
+    console.log(server.settings.app.scripts)
     const payloadToSend = {
       secret: '123',
       event: 'create',
