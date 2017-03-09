@@ -12,7 +12,6 @@ exports.github = {
     const event = request.headers['x-github-event'];
     const payload = request.payload;
     const sig = `sha1=${crypto.createHmac('sha1', settings.secret).update(JSON.stringify(payload)).digest('hex')}`;
-
     // confirm signature:
     if (headerSig !== sig) {
       request.server.log(['github', 'secret'], 'Secret didnt match');

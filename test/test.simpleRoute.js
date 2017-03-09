@@ -3,12 +3,11 @@ const test = require('tape');
 const setup = require('./setup.js');
 const wreck = require('wreck');
 const path = require('path');
+
 test('simpleRoute will send a hook', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
-    console.log('+++++++++++++++++++++++++++++++++')
-    console.log(server.settings.app.scripts)
     const payloadToSend = {
       secret: '123',
       event: 'create',
@@ -18,9 +17,9 @@ test('simpleRoute will send a hook', (t) => {
     };
     const oldLog = console.log;
     const allScriptResults = [];
-    // console.log = (data) => {
-    //   allScriptResults.push(data);
-    // };
+    console.log = (data) => {
+      allScriptResults.push(data);
+    };
     wreck.post('http://localhost:8080/simple', {
       payload: payloadToSend
     }, (err, res, payload) => {
@@ -50,25 +49,26 @@ test('simpleRoute will bounce if not valid', (t) => {
     });
   });
 });
-/*
+
 test('simpleRoute will bounce if secret not correct', (t) => {
-  const server = new Server({ secret: '123', scripts: path.join(__dirname, 'scripts'), verbose: true });
-  server.start();
-  const payloadToSend = {
-    event: 'create',
-    secret: 'no good',
-    user: 'octocat',
-    repo: 'octocat/Goodbye-World',
-    branch: 'notMaster',
-  };
-  wreck.post('http://localhost:8080/simple', {
-    payload: payloadToSend
-  }, (err, res, payload) => {
-    t.equal(err, null);
-    t.equal(res.statusCode, 403);
-    server.stop(() => {
-      t.end();
+  setup({}, (err, server) => {
+    server.settings.app.secret = '123';
+    server.settings.app.scripts = path.join(__dirname, 'scripts');
+    const payloadToSend = {
+      event: 'create',
+      secret: 'no good',
+      user: 'octocat',
+      repo: 'octocat/Goodbye-World',
+      branch: 'notMaster',
+    };
+    wreck.post('http://localhost:8080/simple', {
+      payload: payloadToSend
+    }, (err, res, payload) => {
+      t.equal(err, null);
+      t.equal(res.statusCode, 401);
+      server.stop(() => {
+        t.end();
+      });
     });
   });
 });
-*/
