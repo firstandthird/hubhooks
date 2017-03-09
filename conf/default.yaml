@@ -2,7 +2,7 @@ verbose: false
 port: 8080
 secret: ''
 pusherName: process.env.HOSTNAME
-scripts: '{{ CWD }}'
+scripts: ''
 # log: Logr.createLogger({
 #     reporters: {
 #       console: {
