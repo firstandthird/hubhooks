@@ -6,22 +6,32 @@ const argv = require('yargs')
   .usage('Usage: $0 --scripts path/to/scripts --secret blah')
   .option('verbose', {
     describe: 'verbose syntax',
-    default: false
+    default: undefined
   })
   .option('scripts', {
     describe: 'path to directory containing js scripts to execute when hook fires',
-    default: process.cwd()
+    default: undefined
   })
   .option('secret', {
-    describe: 'secret auth code used for decrypting the github packet signature'
+    describe: 'secret auth code used for decrypting the github packet signature',
+    default: undefined
   })
   .env()
   .argv;
 
 const rapptor = new Rapptor();
-rapptor.start();
-
-// need to set this:
-//   verbose: argv.verbose,
-//   scripts: argv.scripts,
-//   secret: argv.secret
+// set command-line options as relevant:
+rapptor.start((err, server) => {
+  if (err) {
+    throw err;
+  }
+  if (argv.verbose !== undefined) {
+    server.settings.app.verbose = argv.verbose;
+  }
+  if (argv.scripts !== undefined) {
+    server.settings.app.scripts = argv.scripts;
+  }
+  if (argv.secret !== undefined) {
+    server.settings.app.secret = argv.secret;
+  }
+});

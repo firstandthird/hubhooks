@@ -3,9 +3,3 @@ port: 8080
 secret: ''
 pusherName: process.env.HOSTNAME
 scripts: ''
-# log: Logr.createLogger({
-#     reporters: {
-#       console: {
-#         reporter: require('logr-console-color')
-#         options: {
-#           timestamp: false
