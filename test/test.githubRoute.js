@@ -75,6 +75,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
+    server.settings.app.verbose = true;
     const payloadToSend = {
       action: 'opened',
       issue: {
