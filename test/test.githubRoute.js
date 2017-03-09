@@ -11,6 +11,7 @@ test('githubRoute: will bounce if signature key not given', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
+    server.log = () => {};
     wreck.post('http://localhost:8080', {
       headers: {
         'x-hub-signature': '123'
@@ -35,6 +36,7 @@ test('githubRoute accepts http signals', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
+    server.log = () => {};
     const payloadToSend = {
       action: 'opened',
       issue: {
