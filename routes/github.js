@@ -26,7 +26,7 @@ exports.github = {
       repo: payload.repository ? payload.repository.name : null,
       branch: payload.ref ? payload.ref.replace('refs/heads/', '') : null
     };
-    settings.log = request.server.log;
+    settings.log = (tags, data) => request.server.log(tags, data);
     request.server.methods.executeScripts(dataToProcess, settings, () => {
       request.server.log(['finished'], dataToProcess);
       return reply('success');

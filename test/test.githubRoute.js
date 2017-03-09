@@ -11,7 +11,6 @@ test('githubRoute: will bounce if signature key not given', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
-    server.log = () => {};
     wreck.post('http://localhost:8080', {
       headers: {
         'x-hub-signature': '123'
@@ -36,7 +35,6 @@ test('githubRoute accepts http signals', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
-    server.log = () => {};
     const payloadToSend = {
       action: 'opened',
       issue: {
@@ -72,7 +70,7 @@ test('githubRoute accepts http signals', (t) => {
     });
   });
 });
-/*
+
 test('githubRoute will trigger before/end event hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -99,9 +97,6 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     const oldLog = server.log;
     const allScriptResults = [];
     server.log = (tags, data) => {
-      console.log('pushed:')
-      console.log(tags)
-      console.log(data)
       allScriptResults.push(data);
     };
     wreck.post('http://localhost:8080', {
@@ -117,6 +112,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       server.stop(() => {
         console.log('==============================================')
         console.log(allScriptResults)
+        console.log(allScriptResults.length)
         t.equal(allScriptResults[0].indexOf('create') > -1, true);
         t.equal(allScriptResults[0].indexOf('before') > -1, true);
         // t.equal(allScriptResults[allScriptResults.length === 5 ? 2 : 1].indexOf('octocat') > -1, true);
@@ -174,4 +170,3 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     });
   });
 });
-*/

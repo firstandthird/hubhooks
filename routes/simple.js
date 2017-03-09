@@ -22,7 +22,7 @@ exports.simple = {
       if (settings.verbose) {
         request.server.log(['simple', 'incoming'], request.payload);
       }
-      settings.log = request.server.log;
+      settings.log = (tags, data) => request.server.log(tags, data);
       return request.server.methods.executeScripts(request.payload, settings, (executeErr, executeResults) => {
         if (executeErr) {
           return reply('failed');
