@@ -1,6 +1,5 @@
 'use strict';
 const crypto = require('crypto');
-const executeScripts = require('../lib/executeScripts');
 const boom = require('boom');
 
 exports.github = {
@@ -28,7 +27,7 @@ exports.github = {
       branch: payload.ref ? payload.ref.replace('refs/heads/', '') : null
     };
     settings.log = request.server.log;
-    executeScripts(dataToProcess, settings, () => {
+    request.server.methods.executeScripts(dataToProcess, settings, () => {
       request.server.log(['finished'], dataToProcess);
     });
     return reply('ok');

@@ -1,7 +1,6 @@
 'use strict';
 const Joi = require('joi');
 const boom = require('boom');
-const executeScripts = require('../lib/executeScripts');
 
 exports.simple = {
   method: 'POST',
@@ -24,7 +23,7 @@ exports.simple = {
         request.server.log(['simple', 'incoming'], request.payload);
       }
       settings.log = request.server.log;
-      return executeScripts(request.payload, settings, (executeErr, executeResults) => {
+      return request.server.methods.executeScripts(request.payload, settings, (executeErr, executeResults) => {
         if (executeErr) {
           return reply('failed');
         }
