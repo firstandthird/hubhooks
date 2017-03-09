@@ -1,25 +1,27 @@
 'use strict';
 const test = require('tape');
-const executeScripts = require('../lib/executeScripts');
 const runFirstExistingScript = require('../lib/runFirstExistingScript');
 const path = require('path');
+const setup = require('./setup.js');
 
 test('executeScripts', (t) => {
-  executeScripts({
-    event: 'create',
-    repo: 'octocat/Hello-World',
-    branch: 'master'
-  },
-    {
-      scripts: path.join(__dirname, 'scripts'),
-      log: () => {}
-    }, (err, results) => {
-      t.equal(err, null);
-      t.equal(results.afterHooks, path.join(__dirname, 'scripts', 'hooks', 'after'));
-      t.equal(results.beforeHooks, path.join(__dirname, 'scripts', 'hooks', 'create', 'before'));
-      t.equal(results.processResponse, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
-      t.end();
-    });
+  setup({}, (err, server) => {
+    server.methods.executeScripts({
+      event: 'create',
+      repo: 'octocat/Hello-World',
+      branch: 'master'
+    },
+      {
+        scripts: path.join(__dirname, 'scripts'),
+        log: () => {}
+      }, (err, results) => {
+        t.equal(err, null);
+        t.equal(results.afterHooks, path.join(__dirname, 'scripts', 'hooks', 'after'));
+        t.equal(results.beforeHooks, path.join(__dirname, 'scripts', 'hooks', 'create', 'before'));
+        t.equal(results.processResponse, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
+        t.end();
+      });
+  });
 });
 
 test('runFirstExistingScript', (t) => {
