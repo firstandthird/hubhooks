@@ -97,7 +97,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     const oldLog = server.log;
     const allScriptResults = [];
     server.log = (tags, data) => {
-      allScriptResults.push(tags);
+      allScriptResults.push(data);
     };
     wreck.post('http://localhost:8080', {
       headers: {
@@ -110,6 +110,10 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       t.equal(err, null);
       t.equal(res.statusCode, 200);
       server.stop(() => {
+        console.log('=========')
+        console.log('=========')
+        console.log('=========')
+        console.log(allScriptResults)
         t.equal(allScriptResults[0].indexOf('create') > -1, true);
         t.equal(allScriptResults[0].indexOf('before') > -1, true);
         t.equal(allScriptResults[2].indexOf('octocat') > -1, true);
