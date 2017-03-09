@@ -15,15 +15,15 @@ test('simpleRoute will send a hook', (t) => {
       branch: 'notMaster',
       user: 'octocat'
     };
-    const oldLog = console.log;
+    const oldLog = server.log;
     const allScriptResults = [];
-    console.log = (data) => {
+    server.log = (tags, data) => {
       allScriptResults.push(data);
     };
     wreck.post('http://localhost:8080/simple', {
       payload: payloadToSend
     }, (err, res, payload) => {
-      console.log = oldLog;
+      server.log = oldLog;
       t.equal(err, null);
       t.equal(res.statusCode, 200);
       t.equal(allScriptResults[0].indexOf('before') > -1, true);
