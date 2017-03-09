@@ -30,6 +30,6 @@ exports.github = {
     request.server.methods.executeScripts(dataToProcess, settings, () => {
       request.server.log(['finished'], dataToProcess);
     });
-    return reply('ok');
+    return reply('success');
   }
 };

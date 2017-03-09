@@ -42,7 +42,7 @@ test('simpleRoute will bounce if not valid', (t) => {
       payload: payloadToSend
     }, (err, res, payload) => {
       t.equal(err, null);
-      t.equal(res.statusCode, 403);
+      t.equal(res.statusCode, 400);
       server.stop(() => {
         t.end();
       });
