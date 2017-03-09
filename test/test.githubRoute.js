@@ -160,11 +160,8 @@ test('githubRoute will trigger event-specific hooks', (t) => {
       t.equal(err, null);
       t.equal(res.statusCode, 200);
       server.stop(() => {
-        console.log('2222222222222')
-        console.log(allScriptResults)
-        t.equal(allScriptResults[1], 'the get down\n');
-        t.equal(allScriptResults[3], 'bloodline\n');
-        t.equal(allScriptResults[5], 'house of cards\n');
+        t.equal(allScriptResults[0].indexOf('default') > -1, true);
+        t.equal(allScriptResults[1].indexOf('after') > -1, true);
         t.end();
       });
     });
