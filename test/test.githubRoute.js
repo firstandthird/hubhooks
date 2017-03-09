@@ -97,7 +97,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     const oldLog = server.log;
     const allScriptResults = [];
     server.log = (tags, data) => {
-      allScriptResults.push(data);
+      allScriptResults.push(tags);
     };
     wreck.post('http://localhost:8080', {
       headers: {
