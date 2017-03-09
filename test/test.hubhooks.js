@@ -48,7 +48,8 @@ test('runFirstExistingScript fallback if none executed', (t) => {
   ], {
     event: 'create'
   }, {
-    scripts: path.join(__dirname, 'scripts')
+    scripts: path.join(__dirname, 'scripts'),
+    log: () => {}
   }, (err, results) => {
     t.notOk(err);
     t.equal(results, undefined);
@@ -63,7 +64,8 @@ test('runFirstExistingScript fallback if none executed', (t) => {
   ], {
     event: 'create'
   }, {
-    scripts: path.join(__dirname, 'scripts')
+    scripts: path.join(__dirname, 'scripts'),
+    log: () => {}
   }, (err, results) => {
     t.notOk(err);
     t.end();
@@ -76,7 +78,8 @@ test('runFirstExistingScript error fallback', (t) => {
   ], {
     event: 'alter'
   }, {
-    scripts: path.join(__dirname, 'scripts')
+    scripts: path.join(__dirname, 'scripts'),
+    log: () => {}
   }, (err, results) => {
     t.ok(err);
     t.equal(err.toString().indexOf('alter') > -1, true);
