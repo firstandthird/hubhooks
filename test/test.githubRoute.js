@@ -113,7 +113,6 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       server.stop(() => {
         console.log('==============================================')
         console.log(allScriptResults)
-        console.log(allScriptResults.length)
         t.equal(allScriptResults[0].indexOf('create') > -1, true);
         t.equal(allScriptResults[0].indexOf('before') > -1, true);
         // t.equal(allScriptResults[allScriptResults.length === 5 ? 2 : 1].indexOf('octocat') > -1, true);
@@ -164,8 +163,9 @@ test('githubRoute will trigger event-specific hooks', (t) => {
       t.equal(err, null);
       t.equal(res.statusCode, 200);
       server.stop(() => {
-        t.equal(allScriptResults[0].indexOf('default') > -1, true);
-        t.equal(allScriptResults[allScriptResults.length - 1].indexOf('after') > -1, true);
+        t.equal(allScriptResults[1], 'the get down\n');
+        t.equal(allScriptResults[3], 'bloodline\n');
+        t.equal(allScriptResults[5], 'house of cards\n');
         t.end();
       });
     });
