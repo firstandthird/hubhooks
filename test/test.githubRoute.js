@@ -116,10 +116,10 @@ test('githubRoute will trigger before/end event hooks', (t) => {
         console.log(allScriptResults)
         t.equal(allScriptResults[0].indexOf('create') > -1, true);
         t.equal(allScriptResults[0].indexOf('before') > -1, true);
-        t.equal(allScriptResults[2].indexOf('octocat') > -1, true);
-        t.equal(allScriptResults[2].indexOf('Hello-World') > -1, true);
-        t.equal(allScriptResults[4].indexOf('hooks') > -1, true);
-        t.equal(allScriptResults[4].indexOf('after') > -1, true);
+        t.equal(allScriptResults[1].indexOf('octocat') > -1, true);
+        t.equal(allScriptResults[1].indexOf('Hello-World') > -1, true);
+        t.equal(allScriptResults[2].indexOf('hooks') > -1, true);
+        t.equal(allScriptResults[2].indexOf('after') > -1, true);
         t.end();
       });
     });
