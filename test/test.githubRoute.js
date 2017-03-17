@@ -6,7 +6,7 @@ const setup = require('./setup.js');
 // you can use this snippet to print an sha1 strings for any other packages you want to add for testing:
 // const crypto = require('crypto');
 // console.log(crypto.createHmac('sha1', '123').update(JSON.stringify(payloadToSend)).digest('hex'));
-
+/*
 test('githubRoute: will bounce if signature key not given', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -70,7 +70,7 @@ test('githubRoute accepts http signals', (t) => {
     });
   });
 });
-
+*/
 test('githubRoute will trigger before/end event hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -95,10 +95,10 @@ test('githubRoute will trigger before/end event hooks', (t) => {
         id: 1,
       }
     };
-    const oldLog = server.log;
+    const oldLog = console.log;
     const allScriptResults = [];
     server.log = (tags, data) => {
-      allScriptResults.push(data);
+      allScriptResults.push(tags);
     };
     wreck.post('http://localhost:8080', {
       headers: {
@@ -107,7 +107,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       },
       payload: payloadToSend
     }, (err, res, payload) => {
-      server.log = oldLog;
+      console.log = oldLog;
       t.equal(err, null);
       t.equal(res.statusCode, 200);
       server.stop(() => {
@@ -120,7 +120,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     });
   });
 });
-
+/*
 test('githubRoute will trigger event-specific hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -167,3 +167,4 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     });
   });
 });
+*/
