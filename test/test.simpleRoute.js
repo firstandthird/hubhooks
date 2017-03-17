@@ -24,7 +24,6 @@ test('simpleRoute will send a hook', (t) => {
       payload: payloadToSend
     }, (err, res, payload) => {
       console.log = oldLog;
-      console.log(allScriptResults);
       t.equal(err, null);
       t.equal(res.statusCode, 200);
       t.equal(allScriptResults[0].indexOf('before') > -1, true);
