@@ -6,7 +6,7 @@ const setup = require('./setup.js');
 // you can use this snippet to print an sha1 strings for any other packages you want to add for testing:
 // const crypto = require('crypto');
 // console.log(crypto.createHmac('sha1', '123').update(JSON.stringify(payloadToSend)).digest('hex'));
-/*
+
 test('githubRoute: will bounce if signature key not given', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -70,7 +70,7 @@ test('githubRoute accepts http signals', (t) => {
     });
   });
 });
-*/
+
 test('githubRoute will trigger before/end event hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -97,8 +97,8 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     };
     const oldLog = console.log;
     const allScriptResults = [];
-    server.log = (tags, data) => {
-      allScriptResults.push(tags);
+    console.log = (data) => {
+      allScriptResults.push(data);
     };
     wreck.post('http://localhost:8080', {
       headers: {
@@ -111,6 +111,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       t.equal(err, null);
       t.equal(res.statusCode, 200);
       server.stop(() => {
+        console.log(allScriptResults);
         t.equal(allScriptResults[0].indexOf('before') > -1, true);
         t.equal(allScriptResults[1], 'the get down\n');
         t.equal(allScriptResults[3], 'arrested development season 4\n');
@@ -120,7 +121,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     });
   });
 });
-/*
+
 test('githubRoute will trigger event-specific hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -144,9 +145,9 @@ test('githubRoute will trigger event-specific hooks', (t) => {
         id: 1,
       }
     };
-    const oldLog = server.log;
+    const oldLog = console.log;
     const allScriptResults = [];
-    server.log = (tags, data) => {
+    console.log = (data) => {
       allScriptResults.push(data);
     };
     wreck.post('http://localhost:8080', {
@@ -156,10 +157,11 @@ test('githubRoute will trigger event-specific hooks', (t) => {
       },
       payload: payloadToSend
     }, (err, res, payload) => {
-      server.log = oldLog;
+      console.log = oldLog;
       t.equal(err, null);
       t.equal(res.statusCode, 200);
       server.stop(() => {
+        console.log(allScriptResults)
         t.equal(allScriptResults[0].indexOf('default') > -1, true);
         t.equal(allScriptResults[1].indexOf('after') > -1, true);
         t.end();
@@ -167,4 +169,3 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     });
   });
 });
-*/
