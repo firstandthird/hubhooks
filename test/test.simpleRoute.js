@@ -23,11 +23,13 @@ test('simpleRoute will send a hook', (t) => {
     wreck.post('http://localhost:8080/simple', {
       payload: payloadToSend
     }, (err, res, payload) => {
-      console.log = oldLog;
-      t.equal(err, null);
-      t.equal(res.statusCode, 200);
-      t.equal(allScriptResults[0].indexOf('before') > -1, true);
-      server.stop(t.end);
+      setTimeout(() => {
+        console.log = oldLog;
+        t.equal(err, null);
+        t.equal(res.statusCode, 200);
+        t.equal(allScriptResults[0].indexOf('before') > -1, true);
+        server.stop(t.end);
+      }, 500);
     });
   });
 });

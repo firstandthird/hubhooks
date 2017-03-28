@@ -29,7 +29,7 @@ exports.github = {
     settings.log = (tags, data) => request.server.log(tags, data);
     request.server.methods.executeScripts(dataToProcess, settings, () => {
       request.server.log(['finished'], dataToProcess);
-      return reply('success');
     });
+    return reply('success');
   }
 };

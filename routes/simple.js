@@ -18,19 +18,23 @@ exports.simple = {
   },
   handler(request, reply) {
     const settings = request.server.settings.app;
-    if (request.payload.secret === settings.secret) {
-      if (settings.verbose) {
-        request.server.log(['simple', 'incoming'], request.payload);
-      }
-      settings.log = (tags, data) => request.server.log(tags, data);
-      return request.server.methods.executeScripts(request.payload, settings, (executeErr, executeResults) => {
-        if (executeErr) {
-          return reply('failed');
-        }
-        return reply('success');
-      });
+    if (settings.verbose) {
+      request.server.log(['simple', 'incoming'], request.payload);
     }
-    request.server.log(['simple', 'secret'], 'Secret didnt match');
-    return reply(boom.unauthorized('Permission Denied'));
+    if (request.payload.secret !== settings.secret) {
+      request.server.log(['simple', 'secret'], 'Secret didnt match');
+      return reply(boom.unauthorized('Permission Denied'));
+    }
+    settings.log = (tags, data) => request.server.log(tags, data);
+    // go ahead and reply to github before the script runs
+    reply('success');
+    return request.server.methods.executeScripts(request.payload, settings, (executeErr, executeResults) => {
+      if (executeErr) {
+        request.server.log(executeErr);
+      }
+      if (settings.verbose) {
+        request.server.log(['simple', 'results'], executeResults);
+      }
+    });
   }
 };
