@@ -70,7 +70,7 @@ test('githubRoute accepts http signals', (t) => {
     });
   });
 });
-*/
+
 test('githubRoute will trigger before/end event hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -107,13 +107,12 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       },
       payload: payloadToSend
     }, (err, res, payload) => {
-      t.equal(err, null);
-      t.equal(res.statusCode, 200);
       // wait until the process has stopped:
       setTimeout(() => {
         console.log = oldLog;
-        console.log(allScriptResults)
-        t.equal(allScriptResults[0].indexOf('before') > -1, true);
+        t.equal(err, null);
+        t.equal(res.statusCode, 200);
+        t.notEqual(allScriptResults[0].indexOf('before'), -1);
         t.equal(allScriptResults[1].indexOf('the get down'), 0);
         t.equal(allScriptResults[3].indexOf('arrested development season 4'), 0);
         t.equal(allScriptResults[5].indexOf('house of cards'), 0);
@@ -122,7 +121,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     });
   });
 });
-/*
+*/
 test('githubRoute will trigger event-specific hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -159,15 +158,13 @@ test('githubRoute will trigger event-specific hooks', (t) => {
       payload: payloadToSend
     }, (err, res, payload) => {
       console.log = oldLog;
-      t.equal(err, null);
-      t.equal(res.statusCode, 200);
-      server.stop(() => {
-        // console.log(allScriptResults)
+      setTimeout(() => {
+        t.equal(err, null);
+        t.equal(res.statusCode, 200);
         t.equal(allScriptResults[0].indexOf('default') > -1, true);
         t.equal(allScriptResults[1].indexOf('after') > -1, true);
-        t.end();
-      });
+        server.stop(t.end);
+      }, 1500);
     });
   });
 });
-*/
