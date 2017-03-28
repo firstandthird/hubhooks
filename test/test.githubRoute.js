@@ -6,7 +6,7 @@ const setup = require('./setup.js');
 // you can use this snippet to print an sha1 strings for any other packages you want to add for testing:
 // const crypto = require('crypto');
 // console.log(crypto.createHmac('sha1', '123').update(JSON.stringify(payloadToSend)).digest('hex'));
-/*
+
 test('githubRoute: will bounce if signature key not given', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -121,30 +121,11 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     });
   });
 });
-*/
+
 test('githubRoute will trigger event-specific hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
-    const payloadToSend = {
-      action: 'opened',
-      issue: {
-        url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
-        number: 1347
-      },
-      repository: {
-        id: 1296269,
-        full_name: 'octocat/Goodbye-World',
-        owner: {
-          login: 'octocat',
-          id: 1
-        },
-      },
-      sender: {
-        login: 'octocat',
-        id: 1,
-      }
-    };
     const oldLog = console.log;
     const allScriptResults = [];
     console.log = (data) => {
@@ -155,7 +136,25 @@ test('githubRoute will trigger event-specific hooks', (t) => {
         'x-github-event': 'push',
         'x-hub-signature': 'sha1=2807ea9ca996abd3b063a76b3d088ec7b32e7d72'
       },
-      payload: payloadToSend
+      payload: {
+        action: 'opened',
+        issue: {
+          url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
+          number: 1347
+        },
+        repository: {
+          id: 1296269,
+          full_name: 'octocat/Goodbye-World',
+          owner: {
+            login: 'octocat',
+            id: 1
+          },
+        },
+        sender: {
+          login: 'octocat',
+          id: 1,
+        }
+      }
     }, (err, res, payload) => {
       console.log = oldLog;
       setTimeout(() => {
@@ -164,7 +163,7 @@ test('githubRoute will trigger event-specific hooks', (t) => {
         t.equal(allScriptResults[0].indexOf('default') > -1, true);
         t.equal(allScriptResults[1].indexOf('after') > -1, true);
         server.stop(t.end);
-      }, 1500);
+      }, 500);
     });
   });
 });
