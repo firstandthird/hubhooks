@@ -131,6 +131,9 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     console.log = (data) => {
       allScriptResults.push(data);
     };
+    console.log('calling the event-specific test')
+    console.log('calling the event-specific test')
+    console.log('calling the event-specific test')
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'push',
