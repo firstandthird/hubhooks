@@ -20,6 +20,9 @@ exports.github = {
       //if push and deleted, do nothing
       return reply('skipped');
     }
+    if (payload.ref_type) {
+      process.env.REF_TYPE = payload.ref_type;
+    }
     const dataToProcess = {
       event,
       user: payload.repository ? payload.repository.owner.login : null,
