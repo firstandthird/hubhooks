@@ -132,7 +132,7 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     console.log('calling the event-specific test')
     console.log('calling the event-specific test')
     console.log('calling the event-specific test')
-    server.log = (data) => {
+    console.log = (data) => {
       allScriptResults.push(data);
     };
     server.log = (data) => {
