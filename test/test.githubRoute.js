@@ -107,17 +107,17 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       },
       payload: payloadToSend
     }, (err, res, payload) => {
-      console.log = oldLog;
-      t.equal(err, null);
-      t.equal(res.statusCode, 200);
-      server.stop(() => {
-        // console.log(allScriptResults);
-        t.equal(allScriptResults[0].indexOf('before') > -1, true);
-        t.equal(allScriptResults[1], 'the get down\n');
-        t.equal(allScriptResults[3], 'arrested development season 4\n');
-        t.equal(allScriptResults[5], 'house of cards\n');
-        t.end();
-      });
+      // wait until the process has stopped:
+      setTimeout(() => {
+        console.log = oldLog;
+        t.equal(err, null);
+        t.equal(res.statusCode, 200);
+        t.notEqual(allScriptResults[0].indexOf('before'), -1);
+        t.equal(allScriptResults[1].indexOf('the get down'), 0);
+        t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
+        t.equal(allScriptResults[7].indexOf('house of cards'), 0);
+        server.stop(t.end);
+      }, 500);
     });
   });
 });
@@ -126,46 +126,36 @@ test('githubRoute will trigger event-specific hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
-    const payloadToSend = {
-      action: 'opened',
-      issue: {
-        url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
-        number: 1347
-      },
-      repository: {
-        id: 1296269,
-        full_name: 'octocat/Goodbye-World',
-        owner: {
-          login: 'octocat',
-          id: 1
-        },
-      },
-      sender: {
-        login: 'octocat',
-        id: 1,
-      }
-    };
-    const oldLog = console.log;
-    const allScriptResults = [];
-    console.log = (data) => {
-      allScriptResults.push(data);
-    };
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'push',
         'x-hub-signature': 'sha1=2807ea9ca996abd3b063a76b3d088ec7b32e7d72'
       },
-      payload: payloadToSend
+      payload: {
+        action: 'opened',
+        issue: {
+          url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
+          number: 1347
+        },
+        repository: {
+          id: 1296269,
+          full_name: 'octocat/Goodbye-World',
+          owner: {
+            login: 'octocat',
+            id: 1
+          },
+        },
+        sender: {
+          login: 'octocat',
+          id: 1,
+        }
+      }
     }, (err, res, payload) => {
-      console.log = oldLog;
-      t.equal(err, null);
-      t.equal(res.statusCode, 200);
-      server.stop(() => {
-        // console.log(allScriptResults)
-        t.equal(allScriptResults[0].indexOf('default') > -1, true);
-        t.equal(allScriptResults[1].indexOf('after') > -1, true);
-        t.end();
-      });
+      setTimeout(() => {
+        t.equal(err, null);
+        t.equal(res.statusCode, 200);
+        server.stop(t.end);
+      }, 500);
     });
   });
 });
