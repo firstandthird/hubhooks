@@ -151,7 +151,6 @@ test('githubRoute will trigger event-specific hooks', (t) => {
         }
       }
     }, (err, res, payload) => {
-      console.log = oldLog;
       setTimeout(() => {
         t.equal(err, null);
         t.equal(res.statusCode, 200);
