@@ -128,12 +128,13 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     server.settings.app.scripts = path.join(__dirname, 'scripts');
     const oldLog = console.log;
     const allScriptResults = [];
+    console.log('calling the event-specific test')
+    console.log('calling the event-specific test')
+    console.log('calling the event-specific test')
+    console.log('calling the event-specific test')
     console.log = (data) => {
       allScriptResults.push(data);
     };
-    console.log('calling the event-specific test')
-    console.log('calling the event-specific test')
-    console.log('calling the event-specific test')
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'push',
