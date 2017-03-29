@@ -132,7 +132,10 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     console.log('calling the event-specific test')
     console.log('calling the event-specific test')
     console.log('calling the event-specific test')
-    console.log = (data) => {
+    server.log = (data) => {
+      allScriptResults.push(data);
+    };
+    server.log = (data) => {
       allScriptResults.push(data);
     };
     wreck.post('http://localhost:8080', {
@@ -161,6 +164,7 @@ test('githubRoute will trigger event-specific hooks', (t) => {
       }
     }, (err, res, payload) => {
       console.log = oldLog;
+      server.log = oldLog;
       setTimeout(() => {
         t.equal(err, null);
         t.equal(res.statusCode, 200);
