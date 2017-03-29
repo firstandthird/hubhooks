@@ -126,18 +126,6 @@ test('githubRoute will trigger event-specific hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
-    const oldLog = console.log;
-    const allScriptResults = [];
-    console.log('calling the event-specific test')
-    console.log('calling the event-specific test')
-    console.log('calling the event-specific test')
-    console.log('calling the event-specific test')
-    console.log = (data) => {
-      allScriptResults.push(data);
-    };
-    server.log = (data) => {
-      allScriptResults.push(data);
-    };
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'push',
@@ -164,12 +152,9 @@ test('githubRoute will trigger event-specific hooks', (t) => {
       }
     }, (err, res, payload) => {
       console.log = oldLog;
-      server.log = oldLog;
       setTimeout(() => {
         t.equal(err, null);
         t.equal(res.statusCode, 200);
-        t.equal(allScriptResults[0].indexOf('default') > -1, true);
-        t.equal(allScriptResults[1].indexOf('after') > -1, true);
         server.stop(t.end);
       }, 500);
     });
