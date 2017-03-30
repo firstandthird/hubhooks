@@ -167,7 +167,7 @@ test('githubRoute sets REF_TYPE if passed', (t) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
     const payloadToSend = {
-      ref_type: 'the type',
+      ref_type: 'hello',
       action: 'opened',
       issue: {
         url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
@@ -175,7 +175,7 @@ test('githubRoute sets REF_TYPE if passed', (t) => {
       },
       repository: {
         id: 1296269,
-        full_name: 'octocat/Hello-World',
+        full_name: 'octocat/Hello-Kitty',
         owner: {
           login: 'octocat',
           id: 1
@@ -193,7 +193,7 @@ test('githubRoute sets REF_TYPE if passed', (t) => {
       },
       payload: payloadToSend
     }, () => {
-      t.equal(process.env.REF_TYPE, 'the type', 'ref type will set the ENV.REF_TYPE variable');
+      t.equal(process.env.REF_RESULT, 'kitty', 'ref type will set the ENV.REF_TYPE variable');
       server.stop(t.end);
     });
   });
