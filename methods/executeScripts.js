@@ -19,6 +19,12 @@ module.exports = {
         ], dataToProcess, options, done);
       },
       processResponse: (beforeHooks, done) => {
+        console.log('process response')
+        console.log('process response')
+        console.log('process response')
+        console.log('process response')
+        console.log('process response')
+        console.log(dataToProcess)
         const paths = [];
         if (dataToProcess.repo) {
           if (dataToProcess.branch) {
@@ -28,6 +34,10 @@ module.exports = {
         }
         paths.push(path.join(options.scripts, dataToProcess.event, 'default'));
         paths.push(path.join(options.scripts, 'default'));
+        console.log('paths list:')
+        console.log('paths list:')
+        console.log('paths list:')
+        console.log(paths)
         runFirstExistingScript(paths, dataToProcess, options, done);
       },
       afterHooks: (processResponse, done) => {
