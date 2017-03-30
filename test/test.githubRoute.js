@@ -3,9 +3,10 @@ const test = require('tape');
 const wreck = require('wreck');
 const path = require('path');
 const setup = require('./setup.js');
+const crypto = require('crypto');
+
 // you can use this snippet to print an sha1 strings for any other packages you want to add for testing:
-// const crypto = require('crypto');
-// console.log(crypto.createHmac('sha1', '123').update(JSON.stringify(payloadToSend)).digest('hex'));
+const getSig = payloadToSend => `sha1=${crypto.createHmac('sha1', '123').update(JSON.stringify(payloadToSend)).digest('hex')}`;
 /*
 test('githubRoute: will bounce if signature key not given', (t) => {
   setup({}, (err, server) => {
@@ -95,29 +96,27 @@ test('githubRoute will trigger before/end event hooks', (t) => {
         id: 1,
       }
     };
-    // const oldLog = console.log;
-    // const allScriptResults = [];
-    // console.log = (data) => {
-    //   allScriptResults.push(data);
-    // };
+    const oldLog = console.log;
+    const allScriptResults = [];
+    console.log = (data) => {
+      allScriptResults.push(data);
+    };
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'create',
-        'x-hub-signature': 'sha1=63094d3ea6854c240dc7107fd9314bf9a60c931a'
+        'x-hub-signature': getSig(payloadToSend)
       },
       payload: payloadToSend
     }, (err, res, payload) => {
       // wait until the process has stopped:
       setTimeout(() => {
-        // console.log = oldLog;
+        console.log = oldLog;
         t.equal(err, null);
         t.equal(res.statusCode, 200);
-        t.equal(process.env.BEFORE, 'the get down', 'ran the "create/before" hook');
-        // t.notEqual(allScriptResults[0].indexOf('before'), -1);
-        // console.log(allScriptResults)
-        // t.equal(allScriptResults[1].indexOf('the get down'), 0);
-        // t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
-        // t.equal(allScriptResults[7].indexOf('house of cards'), 0);
+        t.notEqual(allScriptResults[0].indexOf('before'), -1);
+        t.equal(allScriptResults[1].indexOf('the get down'), 0);
+        t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
+        t.equal(allScriptResults[7].indexOf('house of cards'), 0);
         server.stop(t.end);
       }, 200);
     });
