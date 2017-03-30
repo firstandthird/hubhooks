@@ -19,25 +19,16 @@ module.exports = {
         ], dataToProcess, options, done);
       },
       processResponse: (beforeHooks, done) => {
-        console.log('process response')
-        console.log('process response')
-        console.log('process response')
-        console.log('process response')
-        console.log('process response')
-        console.log(dataToProcess)
         const paths = [];
         if (dataToProcess.repo) {
           if (dataToProcess.branch) {
             paths.push(path.join(options.scripts, dataToProcess.event, `${dataToProcess.repo}-${dataToProcess.branch}`));
           }
           paths.push(path.join(options.scripts, dataToProcess.event, dataToProcess.repo));
+          paths.push(path.join(options.scripts, dataToProcess.event, dataToProcess.user, dataToProcess.repo));
         }
         paths.push(path.join(options.scripts, dataToProcess.event, 'default'));
         paths.push(path.join(options.scripts, 'default'));
-        console.log('paths list:')
-        console.log('paths list:')
-        console.log('paths list:')
-        console.log(paths)
         runFirstExistingScript(paths, dataToProcess, options, done);
       },
       afterHooks: (processResponse, done) => {

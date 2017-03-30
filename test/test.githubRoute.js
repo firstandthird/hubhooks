@@ -98,9 +98,9 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     };
     const oldLog = console.log;
     const allScriptResults = [];
-    // console.log = (data) => {
-    //   allScriptResults.push(data);
-    // };
+    console.log = (data) => {
+      allScriptResults.push(data);
+    };
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'create',
