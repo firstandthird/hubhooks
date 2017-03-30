@@ -1,2 +1,2 @@
 #!/bin/bash
-echo 'arrested development season 4';
+console.log('arrested development season 4');
