@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "the get down"
+export BEFORE="the get down";
