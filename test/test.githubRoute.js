@@ -43,7 +43,7 @@ test('githubRoute accepts http signals', (t) => {
       },
       repository: {
         id: 1296269,
-        full_name: 'octocat/Hello-World',
+        name: 'Hello-World',
         owner: {
           login: 'octocat',
           id: 1
@@ -84,7 +84,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       },
       repository: {
         id: 1296269,
-        full_name: 'octocat/Hello-World',
+        name: 'Hello-World',
         owner: {
           login: 'octocat',
           id: 1
@@ -139,7 +139,7 @@ test('githubRoute will trigger event-specific hooks', (t) => {
         },
         repository: {
           id: 1296269,
-          full_name: 'octocat/Goodbye-World',
+          name: 'Goodbye-World',
           owner: {
             login: 'octocat',
             id: 1
