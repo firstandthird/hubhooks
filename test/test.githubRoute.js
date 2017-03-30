@@ -96,6 +96,11 @@ test('githubRoute will trigger before/end event hooks', (t) => {
         id: 1,
       }
     };
+    const oldLog = console.log;
+    const allScriptResults = [];
+    console.log = (data) => {
+      allScriptResults.push(data);
+    };
     server.on('tail', () => {
       t.notEqual(allScriptResults[0].indexOf('before'), -1);
       t.equal(allScriptResults[1].indexOf('the get down'), 0);
@@ -103,11 +108,6 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       t.equal(allScriptResults[7].indexOf('house of cards'), 0);
       server.stop(t.end);
     });
-    const oldLog = console.log;
-    const allScriptResults = [];
-    console.log = (data) => {
-      allScriptResults.push(data);
-    };
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'create',
