@@ -117,7 +117,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
         t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
         t.equal(allScriptResults[7].indexOf('house of cards'), 0);
         server.stop(t.end);
-      }, 500);
+      }, 200);
     });
   });
 });
@@ -155,7 +155,7 @@ test('githubRoute will trigger event-specific hooks', (t) => {
         t.equal(err, null);
         t.equal(res.statusCode, 200);
         server.stop(t.end);
-      }, 500);
+      }, 200);
     });
   });
 });
