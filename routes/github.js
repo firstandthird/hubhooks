@@ -28,7 +28,7 @@ exports.github = {
       branch: payload.ref ? payload.ref.replace('refs/heads/', '') : null
     };
     settings.log = (tags, data) => request.server.log(tags, data);
-    const tail = request.tail('execute process')
+    const tail = request.tail('execute process');
     request.server.methods.executeScripts(dataToProcess, settings, () => {
       request.server.log(['finished'], dataToProcess);
       tail();

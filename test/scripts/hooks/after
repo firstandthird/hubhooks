@@ -1,2 +1,1 @@
-#!/usr/bin/env node
-console.log('house of cards');
+echo 'house of cards' >> $HUBHOOKS_TEST
