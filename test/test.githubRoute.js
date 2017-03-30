@@ -96,6 +96,13 @@ test('githubRoute will trigger before/end event hooks', (t) => {
         id: 1,
       }
     };
+    server.on('tail', () => {
+      t.notEqual(allScriptResults[0].indexOf('before'), -1);
+      t.equal(allScriptResults[1].indexOf('the get down'), 0);
+      t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
+      t.equal(allScriptResults[7].indexOf('house of cards'), 0);
+      server.stop(t.end);
+    });
     const oldLog = console.log;
     const allScriptResults = [];
     console.log = (data) => {
@@ -108,21 +115,13 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       },
       payload: payloadToSend
     }, (err, res, payload) => {
-      // wait until the process has stopped:
-      setTimeout(() => {
-        console.log = oldLog;
-        t.equal(err, null);
-        t.equal(res.statusCode, 200);
-        t.notEqual(allScriptResults[0].indexOf('before'), -1);
-        t.equal(allScriptResults[1].indexOf('the get down'), 0);
-        t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
-        t.equal(allScriptResults[7].indexOf('house of cards'), 0);
-        server.stop(t.end);
-      }, 200);
+      console.log = oldLog;
+      t.equal(err, null);
+      t.equal(res.statusCode, 200);
     });
   });
 });
-
+/*
 test('githubRoute will trigger event-specific hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
@@ -193,8 +192,9 @@ test('githubRoute sets REF_TYPE if passed', (t) => {
       },
       payload: payloadToSend
     }, () => {
-      t.equal(process.env.REF_RESULT, 'kitty', 'ref type will set the ENV.REF_TYPE variable');
+      t.equal(process.env.REF_, 'kitty', 'ref type will set the ENV.REF_TYPE variable');
       server.stop(t.end);
     });
   });
 });
+*/
