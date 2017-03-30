@@ -127,30 +127,31 @@ test('githubRoute will trigger event-specific hooks', (t) => {
   setup({}, (err, server) => {
     server.settings.app.secret = '123';
     server.settings.app.scripts = path.join(__dirname, 'scripts');
+    const payloadToSend = {
+      action: 'opened',
+      issue: {
+        url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
+        number: 1347
+      },
+      repository: {
+        id: 1296269,
+        name: 'Goodbye-World',
+        owner: {
+          login: 'octocat',
+          id: 1
+        },
+      },
+      sender: {
+        login: 'octocat',
+        id: 1,
+      }
+    };
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'push',
         'x-hub-signature': getSig(payloadToSend)
       },
-      payload: {
-        action: 'opened',
-        issue: {
-          url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
-          number: 1347
-        },
-        repository: {
-          id: 1296269,
-          name: 'Goodbye-World',
-          owner: {
-            login: 'octocat',
-            id: 1
-          },
-        },
-        sender: {
-          login: 'octocat',
-          id: 1,
-        }
-      }
+      payload: payloadToSend
     }, (err, res, payload) => {
       setTimeout(() => {
         t.equal(err, null);
