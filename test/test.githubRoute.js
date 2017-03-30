@@ -98,9 +98,9 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     };
     const oldLog = console.log;
     const allScriptResults = [];
-    console.log = (data) => {
-      allScriptResults.push(data);
-    };
+    // console.log = (data) => {
+    //   allScriptResults.push(data);
+    // };
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'create',
@@ -117,7 +117,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
         t.notEqual(allScriptResults[0].indexOf('before'), -1);
         t.equal(allScriptResults[1].indexOf('the get down'), 0);
         t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
-        t.equal(allScriptResults[7].indexOf('house of cards'), 0);
+        t.equal(allScriptResults[5].indexOf('house of cards'), 0);
         server.stop(t.end);
       }, 200);
     });
