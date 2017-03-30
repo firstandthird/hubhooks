@@ -101,13 +101,17 @@ test('githubRoute will trigger before/end event hooks', (t) => {
     console.log = (data) => {
       allScriptResults.push(data);
     };
+    let x = 0;
     server.on('tail', () => {
-      console.log(allScriptResults)
-      t.notEqual(allScriptResults[0].indexOf('before'), -1);
-      t.equal(allScriptResults[1].indexOf('the get down'), 0);
-      t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
-      t.equal(allScriptResults[7].indexOf('house of cards'), 0);
-      server.stop(t.end);
+      x++;
+      if (x > 2) {
+        console.log(allScriptResults)
+        t.notEqual(allScriptResults[0].indexOf('before'), -1);
+        t.equal(allScriptResults[1].indexOf('the get down'), 0);
+        t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
+        t.equal(allScriptResults[7].indexOf('house of cards'), 0);
+        server.stop(t.end);
+      }
     });
     wreck.post('http://localhost:8080', {
       headers: {
