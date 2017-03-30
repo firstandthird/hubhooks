@@ -24,7 +24,7 @@ exports.github = {
       event,
       ref_type: payload.ref_type ? payload.ref_type : null,
       user: payload.repository ? payload.repository.owner.login : null,
-      repo: payload.repository ? payload.repository.full_name : null,
+      repo: payload.repository ? payload.repository.name : null,
       branch: payload.ref ? payload.ref.replace('refs/heads/', '') : null
     };
     settings.log = (tags, data) => request.server.log(tags, data);
