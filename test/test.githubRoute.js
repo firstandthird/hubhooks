@@ -5,7 +5,7 @@ const path = require('path');
 const setup = require('./setup.js');
 const crypto = require('crypto');
 
-// you can use this snippet to print an sha1 strings for any other packages you want to add for testing:
+// will generate the sha1 signature for each test payload:
 const getSig = payloadToSend => `sha1=${crypto.createHmac('sha1', '123').update(JSON.stringify(payloadToSend)).digest('hex')}`;
 
 test('githubRoute: will bounce if signature key not given', (t) => {
@@ -58,7 +58,7 @@ test('githubRoute accepts http signals', (t) => {
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'create',
-        'x-hub-signature': 'sha1=e5c47527c20eccce2b0e8b5d8f0a2c8237595cc3'
+        'x-hub-signature': getSig(payloadToSend)
       },
       payload: payloadToSend
     }, (err, res, payload) => {
@@ -130,7 +130,7 @@ test('githubRoute will trigger event-specific hooks', (t) => {
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'push',
-        'x-hub-signature': 'sha1=2807ea9ca996abd3b063a76b3d088ec7b32e7d72'
+        'x-hub-signature': getSig(payloadToSend)
       },
       payload: {
         action: 'opened',
@@ -188,7 +188,7 @@ test('githubRoute sets REF_TYPE if passed', (t) => {
     wreck.post('http://localhost:8080', {
       headers: {
         'x-github-event': 'create',
-        'x-hub-signature': 'sha1=d574eada9805392c009f4623813782eccecd3b39'
+        'x-hub-signature': getSig(payloadToSend)
       },
       payload: payloadToSend
     }, () => {
