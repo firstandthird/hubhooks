@@ -25,7 +25,9 @@ module.exports = {
             paths.push(path.join(options.scripts, dataToProcess.event, `${dataToProcess.repo}-${dataToProcess.branch}`));
           }
           paths.push(path.join(options.scripts, dataToProcess.event, dataToProcess.repo));
-          paths.push(path.join(options.scripts, dataToProcess.event, dataToProcess.user, dataToProcess.repo));
+          if (dataToProcess.user) {
+            paths.push(path.join(options.scripts, dataToProcess.event, dataToProcess.user, dataToProcess.repo));
+          }
         }
         paths.push(path.join(options.scripts, dataToProcess.event, 'default'));
         paths.push(path.join(options.scripts, 'default'));
