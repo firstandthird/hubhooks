@@ -1,2 +1,2 @@
-#!/bin/bash
+#!/usr/bin/env node
 console.log('arrested development season 4');
