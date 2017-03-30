@@ -102,6 +102,7 @@ test('githubRoute will trigger before/end event hooks', (t) => {
       allScriptResults.push(data);
     };
     server.on('tail', () => {
+      console.log(allScriptResults)
       t.notEqual(allScriptResults[0].indexOf('before'), -1);
       t.equal(allScriptResults[1].indexOf('the get down'), 0);
       t.equal(allScriptResults[4].indexOf('arrested development season 4'), 0);
