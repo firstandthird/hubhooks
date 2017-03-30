@@ -14,7 +14,7 @@ module.exports = (options, callback) => {
       rapptor.start(done);
     },
     cleanup(done) {
-      fs.unlink(file, done);
+      fs.unlink(file, () => done());
     },
     server(rapptor, done) {
       return done(null, rapptor[0]);
