@@ -1,2 +1,2 @@
-#!/bin/bash
-echo "the get down";
+#!/usr/bin/env node
+console.log('the get down');
