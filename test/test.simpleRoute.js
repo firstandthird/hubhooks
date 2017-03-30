@@ -29,7 +29,7 @@ test('simpleRoute will send a hook', (t) => {
         t.equal(res.statusCode, 200);
         t.equal(allScriptResults[0].indexOf('before') > -1, true);
         server.stop(t.end);
-      }, 500);
+      }, 200);
     });
   });
 });

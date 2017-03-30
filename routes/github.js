@@ -22,14 +22,17 @@ exports.github = {
     }
     const dataToProcess = {
       event,
+      ref_type: payload.ref_type ? payload.ref_type : null,
       user: payload.repository ? payload.repository.owner.login : null,
       repo: payload.repository ? payload.repository.name : null,
       branch: payload.ref ? payload.ref.replace('refs/heads/', '') : null
     };
     settings.log = (tags, data) => request.server.log(tags, data);
-    reply('success');
+    const tail = request.tail('execute process')
     request.server.methods.executeScripts(dataToProcess, settings, () => {
       request.server.log(['finished'], dataToProcess);
+      tail();
     });
+    return reply('success');
   }
 };

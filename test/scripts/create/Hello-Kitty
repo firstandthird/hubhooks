@@ -1,0 +1,2 @@
+#!/bin/bash
+export REF_RESULT="$REF_TYPE kitty";

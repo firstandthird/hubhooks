@@ -6,7 +6,13 @@ const runFirstExistingScript = require('../lib/runFirstExistingScript');
 module.exports = {
   method: (dataToProcess, options, callback) => {
     async.autoInject({
-      beforeHooks: done => {
+      env_vars(done) {
+        if (dataToProcess.ref_type !== null) {
+          process.env.REF_TYPE = dataToProcess.ref_type;
+        }
+        return done();
+      },
+      beforeHooks: (env_vars, done) => {
         runFirstExistingScript([
           path.join(options.scripts, 'hooks', dataToProcess.event, 'before'),
           path.join(options.scripts, 'hooks', 'before')
