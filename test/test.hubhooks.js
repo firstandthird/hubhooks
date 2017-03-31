@@ -8,7 +8,7 @@ test('executeScripts', (t) => {
   setup({}, (err, server) => {
     server.methods.executeScripts({
       event: 'create',
-      repo: 'octocat/Hello-World',
+      repo: 'Hello-World',
       branch: 'master'
     },
       {
@@ -18,7 +18,7 @@ test('executeScripts', (t) => {
         t.equal(err, null);
         t.equal(results.afterHooks, path.join(__dirname, 'scripts', 'hooks', 'after'));
         t.equal(results.beforeHooks, path.join(__dirname, 'scripts', 'hooks', 'create', 'before'));
-        t.equal(results.processResponse, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
+        t.equal(results.processResponse, path.join(__dirname, 'scripts', 'create', 'Hello-World'));
         t.end();
       });
   });
@@ -27,7 +27,7 @@ test('executeScripts', (t) => {
 test('runFirstExistingScript', (t) => {
   runFirstExistingScript([
     path.join(__dirname, 'scripts', 'booga', 'no', 'notAThing'),
-    path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'),
+    path.join(__dirname, 'scripts', 'create', 'Hello-World'),
     path.join(__dirname, 'scripts', 'create', 'default'),
   ], {
     event: 'create'
@@ -36,7 +36,7 @@ test('runFirstExistingScript', (t) => {
     log: () => {}
   }, (err, results) => {
     t.notOk(err);
-    t.equal(results, path.join(__dirname, 'scripts', 'create', 'octocat/Hello-World'));
+    t.equal(results, path.join(__dirname, 'scripts', 'create', 'Hello-World'));
     t.end();
   });
 });

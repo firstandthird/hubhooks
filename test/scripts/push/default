@@ -1,2 +1,1 @@
-#!/usr/bin/env node
-console.log('luke cage');
+echo 'luke cage' >> $HUBHOOKS_TEST

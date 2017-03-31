@@ -1,2 +1,1 @@
-#!/bin/bash
-export REF_RESULT="$REF_TYPE kitty";
+echo $REF_TYPE >> $HUBHOOKS_TEST

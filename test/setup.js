@@ -7,14 +7,13 @@ const os = require('os');
 module.exports = (options, callback) => {
   const file = path.join(os.tmpdir(), 'hubhooks.txt');
   process.env.HUBHOOKS_TEST = file;
-  console.log(file);
   async.autoInject({
     rapptor(done) {
       const rapptor = new Rapptor(options);
       rapptor.start(done);
     },
     cleanup(done) {
-      fs.unlink(file, () => done());
+      fs.unlink(file, (err) => done());
     },
     server(rapptor, done) {
       return done(null, rapptor[0]);
