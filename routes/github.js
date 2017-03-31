@@ -22,6 +22,7 @@ exports.github = {
     }
     const dataToProcess = {
       event,
+      ref_type: payload.ref_type ? payload.ref_type : null,
       user: payload.repository ? payload.repository.owner.login : null,
       repo: payload.repository ? payload.repository.name : null,
       branch: payload.ref ? payload.ref.replace('refs/heads/', '') : null
