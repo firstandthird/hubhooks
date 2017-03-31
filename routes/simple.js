@@ -28,6 +28,7 @@ exports.simple = {
     settings.log = (tags, data) => request.server.log(tags, data);
     // go ahead and reply to github before the script runs
     reply('success');
+    const tail = request.tail('execute process');
     return request.server.methods.executeScripts(request.payload, settings, (executeErr, executeResults) => {
       if (executeErr) {
         request.server.log(executeErr);
@@ -35,6 +36,7 @@ exports.simple = {
       if (settings.verbose) {
         request.server.log(['simple', 'results'], executeResults);
       }
+      tail();
     });
   }
 };

@@ -3,6 +3,8 @@ const test = require('tape');
 const setup = require('./setup.js');
 const wreck = require('wreck');
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
 
 test('simpleRoute will send a hook', (t) => {
   setup({}, (err, server) => {
@@ -15,21 +17,21 @@ test('simpleRoute will send a hook', (t) => {
       branch: 'notMaster',
       user: 'octocat'
     };
-    const oldLog = console.log;
-    const allScriptResults = [];
-    console.log = (data) => {
-      allScriptResults.push(data);
-    };
+    server.on('tail', () => {
+      fs.readFile(process.env.HUBHOOKS_TEST, (err, data) => {
+        const allScriptResults = data.toString().split(os.EOL);
+        console.log(allScriptResults);
+        t.equal(allScriptResults[0], 'the get down');
+        t.equal(allScriptResults[1], 'bloodline');
+        t.equal(allScriptResults[2], 'house of cards');
+        server.stop(t.end);
+      })
+    });
     wreck.post('http://localhost:8080/simple', {
       payload: payloadToSend
     }, (err, res, payload) => {
-      setTimeout(() => {
-        console.log = oldLog;
-        t.equal(err, null);
-        t.equal(res.statusCode, 200);
-        t.equal(allScriptResults[0].indexOf('before') > -1, true);
-        server.stop(t.end);
-      }, 500);
+      t.equal(err, null);
+      t.equal(res.statusCode, 200);
     });
   });
 });

@@ -1,2 +1,1 @@
-#!/bin/bash
-echo "the get down"
+echo 'the get down' >> $HUBHOOKS_TEST

@@ -1,2 +1,1 @@
-#!/usr/bin/env node
-console.log('arrested development season 1');
+echo 'arrested development season 1' >> $HUBHOOKS_TEST

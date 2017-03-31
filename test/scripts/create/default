@@ -1,2 +1,1 @@
-#!/usr/bin/env node
-console.log('bloodline');
+echo 'bloodline' >> $HUBHOOKS_TEST
