@@ -1,11 +1,15 @@
 app:
+  dockerfile: 'DockerfileDev'
   build: '.'
+  command: 'npm run dev'
   environment:
-    SECRET:
+    SECRET: 'test'
     VERBOSE: 1
     VIRTUAL_HOST: 'hubhooks.*'
     FORCE_COLOR: 1
   ports:
     - '8080'
   volumes:
+    - '.:/home/app/src'
     - './example-scripts:/scripts'
+    - '/var/run/docker.sock:/var/run/docker.sock'

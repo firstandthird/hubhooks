@@ -1,0 +1,10 @@
+FROM firstandthird/node:6.10-3-nobuild
+
+USER root
+RUN apk add --update docker git bash curl
+USER node
+
+ENV SECRET=""
+ENV VERBOSE=0
+ENV SCRIPTS="/scripts"
+
