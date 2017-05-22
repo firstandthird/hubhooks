@@ -205,3 +205,44 @@ test('githubRoute sets REF_TYPE if passed', (t) => {
     }, () => {});
   });
 });
+
+test('githubRoute sets GITHUB_TAG instead of branch if it is a tag push', (t) => {
+  setup({}, (err, server) => {
+    server.settings.app.secret = '123';
+    server.settings.app.scripts = path.join(__dirname, 'scripts');
+    const payloadToSend = {
+      ref: 'refs/tags/v.2.8',
+      action: 'opened',
+      issue: {
+        url: 'https://api.github.com/repos/octocat/Hello-World/issues/1347',
+        number: 1347
+      },
+      repository: {
+        id: 1296269,
+        name: 'Hello-Goodbye',
+        owner: {
+          login: 'octocat',
+          id: 1
+        },
+      },
+      sender: {
+        login: 'octocat',
+        id: 1,
+      }
+    };
+    server.on('tail', () => {
+      fs.readFile(process.env.HUBHOOKS_TEST, (err, data) => {
+        const allScriptResults = data.toString().split(os.EOL);
+        t.equal(allScriptResults[1], 'v.2.8', 'sub-process received the value of process.env.GITHUB_TAG');
+        server.stop(t.end);
+      })
+    });
+    wreck.post('http://localhost:8080', {
+      headers: {
+        'x-github-event': 'create',
+        'x-hub-signature': getSig(payloadToSend)
+      },
+      payload: payloadToSend
+    }, () => {});
+  });
+});
