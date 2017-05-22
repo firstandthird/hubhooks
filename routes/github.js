@@ -25,8 +25,15 @@ exports.github = {
       ref_type: payload.ref_type ? payload.ref_type : null,
       user: payload.repository ? payload.repository.owner.login : null,
       repo: payload.repository ? payload.repository.name : null,
-      branch: payload.ref ? payload.ref.replace('refs/heads/', '') : null
     };
+    // if it is a tag push, make branch blank:
+    if (payload.ref) {
+      if (payload.ref.startsWith('refs/tags')) {
+        dataToProcess.tag = payload.ref.replace('refs/tags/', '');
+      } else {
+        dataToProcess.branch = payload.ref.replace('refs/heads/', '');
+      }
+    }
     settings.log = (tags, data) => request.server.log(tags, data);
     const tail = request.tail('execute process');
     request.server.methods.executeScripts(dataToProcess, settings, () => {

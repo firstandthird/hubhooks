@@ -1,0 +1,1 @@
+echo $GITHUB_TAG >> $HUBHOOKS_TEST

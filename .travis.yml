@@ -2,6 +2,7 @@ before_script:
  - chmod +x test/scripts/hooks/after
  - chmod +x test/scripts/create/Hello-World
  - chmod +x test/scripts/create/Hello-Kitty
+ - chmod +x test/scripts/create/Hello-Goodbye
  - chmod +x test/scripts/create/default
  - chmod +x test/scripts/create/error
  - chmod +x test/scripts/hooks/create/before
